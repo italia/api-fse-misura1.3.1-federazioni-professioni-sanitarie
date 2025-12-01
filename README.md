@@ -1,4 +1,4 @@
-# Repository condiviso per le API delle Federazioni e Professioni Sanitarie nell'ambito della Misura 1.3.1
+# Repository condiviso per le API delle Federazioni delle Professioni Sanitarie nell'ambito della Misura 1.3.1
 
 Questo repository contiene le specifiche delle API relative alla misura 1.3.1 per gli Accordi con le Federazioni Nazionali delle Professioni Sanitarie.
 
