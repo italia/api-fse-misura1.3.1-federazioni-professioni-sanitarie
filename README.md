@@ -10,4 +10,4 @@ Quest’area è pubblica: pertanto, nelle segnalazioni non devono quindi essere 
 - log applicativi o documenti contenenti dati sensibili,
 - dati personali o informazioni soggette a vincoli di riservatezza contrattuale.
 
-Qualora fosse necessario trasmettere informazioni riservate, dovranno essere utilizzati canali alternativi, previamente concordati con ANAC.
+Qualora fosse necessario trasmettere informazioni riservate, dovranno essere utilizzati canali alternativi, previamente concordati con il DTD.
