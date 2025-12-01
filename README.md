@@ -2,6 +2,7 @@
 
 
 ATTENZIONE
+
 Quest’area è pubblica: pertanto, nelle segnalazioni non devono quindi essere inserite informazioni riservate quali:
 
 password o credenziali,
