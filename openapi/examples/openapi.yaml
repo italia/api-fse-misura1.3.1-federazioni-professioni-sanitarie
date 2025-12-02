@@ -1,0 +1,282 @@
+openapi: 3.0.0
+info:
+  version: '1.0.0'
+  title: Federazione Ordine Professioni Sanitarie - Verifica iscrizione professionista
+  description: |
+    API per la verifica dell'iscrizione di un professionista sanitario
+    all'Albo della Federazione Nazionale.
+
+    Parametri di ricerca (alternativi):
+    - `anpr_id` (ID univoco ANPR)
+    - `tax_code` (Codice Fiscale)
+    - `given_name` + `family_name` (Nome e Cognome)
+
+    Regole di utilizzo:
+    - `anpr_id`: restituisce un risultato univoco (nessuna omocodia)
+    - `tax_code`: può restituire più risultati in caso di omocodie
+    - `given_name` + `family_name`: può restituire più risultati
+  contact:
+    name: Federazione - API Support
+    email: api-support@example-federation.it
+  termsOfService: 'https://portale.example-federation.it/cerca-prof/'
+  x-api-id: FPROF-01
+  x-summary: Verifica iscrizione professionista sanitario
+
+servers:
+  - url: 'https://api.example-federation.it/govway/rest/in/Ente/FPROF-01/v1'
+    description: Ambiente di produzione - Verifica iscrizione professionista
+
+paths:
+  /status:
+    get:
+      security: []
+      tags:
+        - status
+      summary: Verifica stato del servizio
+      description: |
+        Endpoint di health check per verificare che il servizio sia attivo e pronto
+        a rispondere alle richieste.
+
+        Restituisce HTTP 200 se il servizio è disponibile.
+      operationId: serviceStatus
+      responses:
+        '200':
+          description: Servizio disponibile
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Too Many Requests
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Service Unavailable
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
+  /check-prof:
+    get:
+      tags:
+        - professionista
+      summary: Verifica iscrizione professionista
+      description: |
+        API per verificare l'iscrizione all'Albo di un professionista.
+
+        Sono ammessi tre schemi alternativi di ricerca (oneOf):
+        - solo `tax_code` (può restituire più risultati in caso di omocodie); oppure
+        - solo `anpr_id` (restituisce un risultato univoco senza omocodie); oppure
+        - `given_name` + `family_name` (può restituire più risultati).
+
+        Il servizio restituisce un elenco di professionisti che corrispondono
+        ai criteri di ricerca, con le informazioni essenziali di iscrizione,
+        stato e data di iscrizione.
+      operationId: checkProfessionista
+      parameters:
+        - name: filtro
+          in: query
+          required: true
+          description: |
+            Oggetto di filtro per la ricerca del professionista.
+            Deve rispettare **esattamente uno** degli schemi previsti:
+            - solo `tax_code` (può restituire più risultati in caso di omocodie); oppure
+            - `given_name` + `family_name` (può restituire più risultati); oppure
+            - solo `anpr_id` (restituisce un risultato univoco).
+          style: form
+          explode: true
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              anpr_id:
+                type: string
+                description: ID univoco ANPR del professionista.
+                example: "AB123456C"
+                minLength: 9
+                maxLength: 9
+              tax_code:
+                type: string
+                description: Tax Identification Number / Codice Fiscale
+                example: RSSMRA80A01F205D
+                pattern: '^(?:^(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$)'
+                minLength: 16
+                maxLength: 16
+              given_name:
+                type: string
+                description: Nome del professionista.
+                nullable: true
+              family_name:
+                type: string
+                description: Cognome del professionista.
+            oneOf:
+              - required: [anpr_id]
+              - required: [tax_code]
+              - required: [given_name, family_name]
+      responses:
+        '200':
+          description: Ricerca eseguita con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    description: Elenco dei professionisti trovati.
+                    items:
+                      $ref: '#/components/schemas/Professionista'
+                  request_id:
+                    type: string
+                    description: Identificativo univoco della richiesta.
+                required:
+                  - result
+                  - request_id
+        '400':
+          description: Parametri di ricerca non validi o mancanti
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Too Many Requests
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Internal Server Error.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Service Unavailable
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
+tags:
+  - name: status
+    description: Endpoint di health check dell'API.
+  - name: professionista
+    description: API relative ai professionisti iscritti all'Albo.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    Agid-JWT-Signature:
+      type: apiKey
+      name: Agid-JWT-Signature
+      in: header
+    Agid-JWT-TrackingEvidence:
+      type: apiKey
+      name: Agid-JWT-TrackingEvidence
+      in: header
+
+  schemas:
+    Problem:
+      type: object
+      title: Dettaglio esito chiamata
+      properties:
+        type:
+          type: string
+          description: Tipologia di errore o messaggio.
+        title:
+          type: string
+          description: Titolo sintetico dell'errore.
+        status:
+          type: integer
+          format: int32
+          minimum: 100
+          maximum: 599
+          description: Codice di stato HTTP associato.
+        detail:
+          type: string
+          description: Descrizione dettagliata dell'errore.
+        result:
+          type: object
+          description: Eventuale payload specifico dell'errore.
+        request_id:
+          type: string
+          description: Identificativo univoco della richiesta.
+      required:
+        - title
+        - status
+        - detail
+
+    Person:
+      type: object
+      title: Persona generica
+      properties:
+        anpr_id:
+          type: string
+          description: ID univoco ANPR del professionista.
+          example: "AB123456C"
+          minLength: 9
+          maxLength: 9
+        tax_code:
+          type: string
+          description: Tax Identification Number / Codice Fiscale
+          example: RSSMRA80A01F205D
+          pattern: '^(?:^(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$)'
+          minLength: 16
+          maxLength: 16
+        given_name:
+          type: string
+          description: Nome del professionista.
+          example: MARIO
+        family_name:
+          type: string
+          description: Cognome del professionista.
+          example: ROSSI
+      required:
+        - anpr_id
+        - tax_code
+        - family_name
+    Professionista:
+      allOf:
+        - $ref: '#/components/schemas/Person'
+        - type: object
+          title: Professionista iscritto all'Albo
+          properties:
+            province:
+              type: string
+              description: Sigla della provincia dell'Ordine di iscrizione.
+              example: RM
+            ordine:
+              type: string
+              description: Denominazione dell'Ordine territoriale.
+              example: Ordine Provinciale di Roma della Professione Sanitaria
+            albo:
+              type: string
+              description: Tipo di Albo della professione sanitaria.
+              example: PROFESSIONE_SANITARIA
+            data_iscrizione:
+              type: string
+              format: date
+              description: Data di iscrizione del professionista all'Albo (formato ISO 8601 YYYY-MM-DD).
+              example: "2000-01-01"
+          required:
+            - province
+            - ordine
+            - albo
+            - data_iscrizione
+
+security:
+  - bearerAuth: []
+  - Agid-JWT-Signature: []
+  - Agid-JWT-TrackingEvidence: []
