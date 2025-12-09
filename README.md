@@ -15,7 +15,7 @@ Le specifiche, le risorse semantiche e le annotazioni sono in fase di realizzazi
 
 Il **DM del 7 settembre 2023** prevede l'accesso dei professionisti sanitari a **FSE 2.0** con specifiche funzionalità per la parte di competenza. Per abilitare tale accesso in modo sicuro ed efficiente, nella riunione del **4 luglio 2025** convocata dal **Ministero della Salute** con la presenza del DTD, è stato proposto alle Federazioni Nazionali l'utilizzo dei fondi **PNRR M1C1-1.3.1-PDND** per identificare tramite uno standard sicuro i professionisti sanitari.
 
-La **Piattaforma Digitale Nazionale Dati (PDND)** assume un ruolo centrale offrendo la possibilità di verificare automaticamente l'**appartenenza** di un professionista sanitario al relativo Albo e il suo **stato professionale corrente**. Questo avviene mediante l'erogazione di **e-service (API)** relativi agli **Albi Unici Nazionali** da parte delle Federazioni Nazionali.
+La **Piattaforma Digitale Nazionale Dati (PDND)** assume un ruolo centrale abilitando la possibilità di verificare automaticamente l'**appartenenza** di un professionista sanitario al relativo Albo e il suo **stato professionale corrente**. Questo avviene mediante l'erogazione di **e-service (API)** relativi agli **Albi Unici Nazionali** da parte delle Federazioni Nazionali.
 
 La PDND assicura così la messa a disposizione del patrimonio informativo della PA, in linea con il **CAD** e la normativa vigente, superando i controlli su dati autocertificati e rendendo i processi più snelli ed efficienti.
 
