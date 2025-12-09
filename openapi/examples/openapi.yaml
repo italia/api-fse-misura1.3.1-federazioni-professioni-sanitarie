@@ -220,6 +220,13 @@ components:
 
     Person:
       type: object
+      x-jsonld-context:
+        CPV: 'https://w3id.org/italia/onto/CPV/'
+        tax_code: 'CPV:taxCode'
+        given_name: 'CPV:givenName'
+        family_name: 'CPV:familyName'
+        anpr_id: 'CPV:personID'
+      x-jsonld-type: 'CPV:Person'
       title: Persona generica
       properties:
         anpr_id:
@@ -248,6 +255,8 @@ components:
         - tax_code
         - family_name
     Professionista:
+      x-jsonld-context:
+        CPV: 'https://w3id.org/italia/onto/CPV/'
       allOf:
         - $ref: '#/components/schemas/Person'
         - type: object
