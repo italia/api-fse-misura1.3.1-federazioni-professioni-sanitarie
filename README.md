@@ -23,6 +23,7 @@ La PDND assicura così la messa a disposizione del patrimonio informativo della 
 
 Il progetto coinvolge le seguenti Federazioni degli Ordini delle Professioni Sanitarie:
 
+- **FNOMCEO** - Federazione Nazionale degli ordini dei medici chirurghi e degli odontoiatri
 - **FNOPI** - Federazione Nazionale Ordini Professioni Infermieristiche
 - **FNO TSRM e PSTRP** - Federazione Nazionale Ordini Tecnici Sanitari di Radiologia Medica e delle Professioni Sanitarie Tecniche, della Riabilitazione e della Prevenzione
 - **CNOP** - Consiglio Nazionale Ordine degli Psicologi
