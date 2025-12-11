@@ -36,7 +36,7 @@ Il progetto coinvolge le seguenti Federazioni degli Ordini delle Professioni San
 
 ### Esperienza pregressa
 
-Il Dipartimento per la Trasformazione Digitale ha già avviato da tempo i lavori con **FNOMCEO** (Federazione Nazionale degli Ordini dei Medici Chirurghi e degli Odontoiatri), da cui si è maturata un'esperienza che costituirà un riferimento metodologico e tecnico per le restanti Federazioni.
+Il Dipartimento per la Trasformazione Digitale ha già avviato da tempo i lavori con **FNOMCEO** (Federazione Nazionale degli Ordini dei Medici Chirurghi e degli Odontoiatri), da cui si è maturata un'esperienza che costituirà un riferimento metodologico e tecnico per tutte le Federazioni.
 
 ## 📁 Struttura del repository
 
