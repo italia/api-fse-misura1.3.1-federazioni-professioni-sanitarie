@@ -99,6 +99,33 @@ Utilizza le **Issues** per:
 
 **Nota**: Se non sei sicuro che si tratti di un vero bug o errore, ti consigliamo di aprire prima una **Discussion** per confrontarti con la community e i maintainer.
 
+## Formato dati Attestazione digitale (proposta)
+
+Di seguito è riportata la prima versione dello schema dei dati relativi all'attestato digitale.
+
+| CAMPO | DESCRIZIONE SINTETICA CAMPO | OBBLIGATORIETÀ (SI/NO) | TIPOLOGIA | LUNGHEZZA MASSIMA CARATTERI |
+|------|----------------------------|------------------------|-----------|----------------------------|
+| taxID | Codice Fiscale | SI | ALFANUMERICO |  |
+| legalName | Denominazione ESTESA Ordine Territoriale | NO | ALFANUMERICO |  |
+| LogoFed | Logo Federazionale Nazionale | NO | MULTIMEDIALE |  |
+| LogoOrd | Logo Ordine Territoriale | NO | MULTIMEDIALE |  |
+| member (image) | Foto Professionista | NO | MULTIMEDIALE |  |
+| member (givenName) | Nome | NO | ALFANUMERICO |  |
+| member (familyName) | Cognome | NO | ALFANUMERICO |  |
+| birthPlace | Luogo di nascita | NO | ALFANUMERICO |  |
+| member (birthDate) | Data di nascita | NO | DATA |  |
+| releasedBy | Rilasciato da Ordine di “...” (Denominazione Corta Ordine Territoriale) | NO | ALFANUMERICO |  |
+| membershipRegister | Albo di appartenenza (sigla) | NO | ALFANUMERICO |  |
+| vatID | Numero di iscrizione all’albo | NO | ALFANUMERICO |  |
+| validFrom | Data di Scadenza | NO | DATA |  |
+| validThrough | Data di Rilascio | NO | DATA |  |
+| identifier | Seriale carta | NO | ALFANUMERICO |  |
+| pensionFund | Numero Ente Nazionale di Previdenza | NO | ALFANUMERICO |  |
+
+Lo schema dati sopra riportato è da intendersi come proposta iniziale ed è aperto a modifiche e miglioramenti.
+Per suggerire variazioni, integrazioni o correzioni allo schema, si invita ad aprire una issue dedicata nel repository di riferimento.
+Il campo relativo alla "LUNGHEZZA MASSIMA CARATTERI" è attualmente lasciato vuoto in quanto si è in attesa dei feedback delle Federazioni, con l’obiettivo di pervenire a uno standard comune e condiviso tra tutti i soggetti coinvolti.
+
 ## ⚠️ ATTENZIONE
 
 Quest'area è pubblica: pertanto, nelle segnalazioni **non devono** essere inserite informazioni riservate quali:
