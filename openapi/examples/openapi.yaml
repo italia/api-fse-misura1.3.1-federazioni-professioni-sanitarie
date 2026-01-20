@@ -46,18 +46,37 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControlHeader"
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimitHeader"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemainingHeader"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitResetHeader"
         '429':
           description: Too Many Requests
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+          headers:
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimitHeader"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemainingHeader"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitResetHeader"
         '503':
           description: Service Unavailable
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+          headers:
+            Retry-After:
+              $ref: "#/components/headers/RetryAfterHeader"
 
   /check-prof:
     get:
@@ -135,36 +154,72 @@ paths:
                 required:
                   - result
                   - request_id
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControlHeader"
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimitHeader"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemainingHeader"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitResetHeader"
         '400':
           description: Parametri di ricerca non validi o mancanti
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+          headers:
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimitHeader"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemainingHeader"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitResetHeader"
         '401':
           description: Unauthorized
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+          headers:
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimitHeader"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemainingHeader"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitResetHeader"
         '429':
           description: Too Many Requests
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+          headers:
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimitHeader"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemainingHeader"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitResetHeader"
         '500':
           description: Internal Server Error.
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+          headers:
+            Retry-After:
+              $ref: "#/components/headers/RetryAfterHeader"
         '503':
           description: Service Unavailable
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+          headers:
+            Retry-After:
+              $ref: "#/components/headers/RetryAfterHeader"
 
 tags:
   - name: status
@@ -173,6 +228,38 @@ tags:
     description: API relative ai professionisti iscritti all'Albo.
 
 components:
+  headers:
+    CacheControlHeader:
+      schema:
+        type: string
+        enum:
+          - no-store
+      description: no-store
+    RateLimitLimitHeader:
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+      description: Numero massimo richieste nell'intervallo di tempo.
+    RateLimitRemainingHeader:
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+      description: Richieste rimanenti nell'intervallo di tempo.
+    RateLimitResetHeader:
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+      description: UTC epoch in secondi, corrispondente a quando la finestra riferita al rate limit corrente effettuerà il reset.
+    RetryAfterHeader:
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+      description: Secondi da attendere prima di ricevere un'ulteriore risposta.
+
   securitySchemes:
     bearerAuth:
       type: http
