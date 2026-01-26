@@ -32,9 +32,9 @@ paths:
       security: []
       tags:
         - status
-      summary: Accertamento stato del servizio
+      summary: Verifica stato del servizio
       description: |
-        Endpoint di health check per accertare che il servizio sia attivo e pronto
+        Endpoint di health check per verificare che il servizio sia attivo e pronto
         a rispondere alle richieste.
 
         Restituisce HTTP 200 se il servizio è disponibile.
