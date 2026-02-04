@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: '1.0.1'
+  version: "1.0.2"
   title: Federazione Ordine Professioni Sanitarie - Accertamento iscrizione professionista
   description: |
     API per l'accertamento dell'iscrizione di un professionista sanitario
@@ -18,12 +18,12 @@ info:
   contact:
     name: Federazione - API Support
     email: api-support@example-federation.it
-  termsOfService: 'https://portale.example-federation.it/cerca-prof/'
+  termsOfService: "https://portale.example-federation.it/cerca-prof/"
   x-api-id: FPROF-01
   x-summary: Accertamento iscrizione professionista sanitario
 
 servers:
-  - url: 'https://api.example-federation.it/govway/rest/in/Ente/FPROF-01/v1'
+  - url: "https://api.example-federation.it/govway/rest/in/Ente/FPROF-01/v1"
     description: Ambiente di produzione - Accertamento iscrizione professionista
 
 paths:
@@ -40,12 +40,12 @@ paths:
         Restituisce HTTP 200 se il servizio è disponibile.
       operationId: serviceStatus
       responses:
-        '200':
+        "200":
           description: Servizio disponibile
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
           headers:
             Cache-Control:
               $ref: "#/components/headers/CacheControlHeader"
@@ -55,12 +55,16 @@ paths:
               $ref: "#/components/headers/RateLimitRemainingHeader"
             RateLimit-Reset:
               $ref: "#/components/headers/RateLimitResetHeader"
-        '429':
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/AgidJWTSignatureHeader"
+            Digest:
+              $ref: "#/components/headers/DigestHeader"
+        "429":
           description: Too Many Requests
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
           headers:
             RateLimit-Limit:
               $ref: "#/components/headers/RateLimitLimitHeader"
@@ -68,15 +72,20 @@ paths:
               $ref: "#/components/headers/RateLimitRemainingHeader"
             RateLimit-Reset:
               $ref: "#/components/headers/RateLimitResetHeader"
-        '503':
+
+        "503":
           description: Service Unavailable
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
           headers:
             Retry-After:
               $ref: "#/components/headers/RetryAfterHeader"
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/AgidJWTSignatureHeader"
+            Digest:
+              $ref: "#/components/headers/DigestHeader"
 
   /check-prof:
     get:
@@ -136,7 +145,7 @@ paths:
               - required: [tax_code]
               - required: [given_name, family_name]
       responses:
-        '200':
+        "200":
           description: Ricerca eseguita con successo
           content:
             application/json:
@@ -147,7 +156,7 @@ paths:
                     type: array
                     description: Elenco dei professionisti trovati.
                     items:
-                      $ref: '#/components/schemas/Professionista'
+                      $ref: "#/components/schemas/Professionista"
                   request_id:
                     type: string
                     description: Identificativo univoco della richiesta.
@@ -163,12 +172,16 @@ paths:
               $ref: "#/components/headers/RateLimitRemainingHeader"
             RateLimit-Reset:
               $ref: "#/components/headers/RateLimitResetHeader"
-        '400':
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/AgidJWTSignatureHeader"
+            Digest:
+              $ref: "#/components/headers/DigestHeader"
+        "400":
           description: Parametri di ricerca non validi o mancanti
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
           headers:
             RateLimit-Limit:
               $ref: "#/components/headers/RateLimitLimitHeader"
@@ -176,12 +189,16 @@ paths:
               $ref: "#/components/headers/RateLimitRemainingHeader"
             RateLimit-Reset:
               $ref: "#/components/headers/RateLimitResetHeader"
-        '401':
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/AgidJWTSignatureHeader"
+            Digest:
+              $ref: "#/components/headers/DigestHeader"
+        "401":
           description: Unauthorized
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
           headers:
             RateLimit-Limit:
               $ref: "#/components/headers/RateLimitLimitHeader"
@@ -189,12 +206,16 @@ paths:
               $ref: "#/components/headers/RateLimitRemainingHeader"
             RateLimit-Reset:
               $ref: "#/components/headers/RateLimitResetHeader"
-        '429':
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/AgidJWTSignatureHeader"
+            Digest:
+              $ref: "#/components/headers/DigestHeader"
+        "429":
           description: Too Many Requests
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
           headers:
             RateLimit-Limit:
               $ref: "#/components/headers/RateLimitLimitHeader"
@@ -202,24 +223,36 @@ paths:
               $ref: "#/components/headers/RateLimitRemainingHeader"
             RateLimit-Reset:
               $ref: "#/components/headers/RateLimitResetHeader"
-        '500':
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/AgidJWTSignatureHeader"
+            Digest:
+              $ref: "#/components/headers/DigestHeader"
+        "500":
           description: Internal Server Error.
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
           headers:
             Retry-After:
               $ref: "#/components/headers/RetryAfterHeader"
-        '503':
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/AgidJWTSignatureHeader"
+            Digest:
+              $ref: "#/components/headers/DigestHeader"
+        "503":
           description: Service Unavailable
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
           headers:
             Retry-After:
               $ref: "#/components/headers/RetryAfterHeader"
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/AgidJWTSignatureHeader"
+            Digest:
+              $ref: "#/components/headers/DigestHeader"
 
 tags:
   - name: status
@@ -259,20 +292,24 @@ components:
         format: int32
         minimum: 0
       description: Secondi da attendere prima di ricevere un'ulteriore risposta.
+    AgidJWTSignatureHeader:
+      schema:
+        type: string
+        format: JWT
+        example: eyJhbGc...1VrXfKTx-CUVz_puiwqkBhulrNKj2fA
+      description: JWT contentente la firma della risposta secondo il pattern INTEGRITY_REST_02 del ModI.
+    DigestHeader:
+      required: true
+      schema:
+        type: string
+        example: SHA-256=72e18bdddf13c911b4dd562ee21979a5c9f235c3a01bd1426e857d8c1a282f41
+      description: Digest del payload del messaggio di risposta secondo il pattern INTEGRITY_REST_02 del ModI.
 
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-    Agid-JWT-Signature:
-      type: apiKey
-      name: Agid-JWT-Signature
-      in: header
-    Agid-JWT-TrackingEvidence:
-      type: apiKey
-      name: Agid-JWT-TrackingEvidence
-      in: header
 
   schemas:
     Problem:
@@ -308,12 +345,12 @@ components:
     Person:
       type: object
       x-jsonld-context:
-        CPV: 'https://w3id.org/italia/onto/CPV/'
-        tax_code: 'CPV:taxCode'
-        given_name: 'CPV:givenName'
-        family_name: 'CPV:familyName'
-        anpr_id: 'CPV:personID'
-      x-jsonld-type: 'CPV:Person'
+        CPV: "https://w3id.org/italia/onto/CPV/"
+        tax_code: "CPV:taxCode"
+        given_name: "CPV:givenName"
+        family_name: "CPV:familyName"
+        anpr_id: "CPV:personID"
+      x-jsonld-type: "CPV:Person"
       title: Persona generica
       properties:
         anpr_id:
@@ -343,9 +380,9 @@ components:
         - family_name
     Professionista:
       x-jsonld-context:
-        CPV: 'https://w3id.org/italia/onto/CPV/'
+        CPV: "https://w3id.org/italia/onto/CPV/"
       allOf:
-        - $ref: '#/components/schemas/Person'
+        - $ref: "#/components/schemas/Person"
         - type: object
           title: Professionista iscritto all'Albo
           properties:
@@ -374,5 +411,3 @@ components:
 
 security:
   - bearerAuth: []
-  - Agid-JWT-Signature: []
-  - Agid-JWT-TrackingEvidence: []
