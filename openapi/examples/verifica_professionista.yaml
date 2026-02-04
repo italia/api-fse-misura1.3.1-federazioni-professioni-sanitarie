@@ -101,8 +101,8 @@ paths:
         API per verificare l'iscrizione all'Albo di un professionista.
 
         Sono ammessi due schemi alternativi di ricerca (oneOf):
-        - solo `tax_code` (può restituire più risultati in caso di omocodie); oppure
-        - solo `anpr_id` (restituisce un risultato univoco senza omocodie).
+        - solo `tax_code`
+        - solo `anpr_id`
 
         La risposta NON restituisce dati anagrafici o liste,
         ma solo l’esito booleano della verifica.
@@ -114,8 +114,8 @@ paths:
           description: |
             Oggetto di filtro per la ricerca del professionista.
             Deve rispettare **esattamente uno** degli schemi previsti:
-            - solo `tax_code` (può restituire più risultati in caso di omocodie); oppure
-            - solo `anpr_id` (restituisce un risultato univoco).
+            - solo `tax_code`
+            - solo `anpr_id`
           style: form
           explode: true
           schema:
