@@ -38,6 +38,8 @@ paths:
         a rispondere alle richieste.
 
         Restituisce HTTP 200 se il servizio è disponibile.
+
+        Questo endpoint non richiede autenticazione.
       operationId: serviceStatus
       responses:
         '200':
@@ -115,6 +117,7 @@ paths:
                 type: string
                 description: ID univoco ANPR del professionista.
                 example: "AB123456C"
+                pattern: '^[A-Z0-9]{9}$'
                 minLength: 9
                 maxLength: 9
               tax_code:
@@ -128,9 +131,13 @@ paths:
                 type: string
                 description: Nome del professionista.
                 nullable: true
+                maxLength: 256
+                pattern: "^[a-zA-ZÀ-ÖØ-öø-ÿ .'-]+$"
               family_name:
                 type: string
                 description: Cognome del professionista.
+                maxLength: 256
+                pattern: "^[a-zA-ZÀ-ÖØ-öø-ÿ .'-]+$"
             oneOf:
               - required: [anpr_id]
               - required: [tax_code]
@@ -142,15 +149,20 @@ paths:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
                 properties:
                   result:
                     type: array
                     description: Elenco dei professionisti trovati.
+                    minItems: 0
+                    maxItems: 100
                     items:
                       $ref: '#/components/schemas/Professionista'
                   request_id:
                     type: string
                     description: Identificativo univoco della richiesta.
+                    maxLength: 64
+                    pattern: '^[a-zA-Z0-9\-]+$'
                 required:
                   - result
                   - request_id
@@ -240,24 +252,28 @@ components:
         type: integer
         format: int32
         minimum: 0
+        maximum: 1000000
       description: Numero massimo richieste nell'intervallo di tempo.
     RateLimitRemainingHeader:
       schema:
         type: integer
         format: int32
         minimum: 0
+        maximum: 1000000
       description: Richieste rimanenti nell'intervallo di tempo.
     RateLimitResetHeader:
       schema:
         type: integer
         format: int32
         minimum: 0
+        maximum: 2147483647
       description: UTC epoch in secondi, corrispondente a quando la finestra riferita al rate limit corrente effettuerà il reset.
     RetryAfterHeader:
       schema:
         type: integer
         format: int32
         minimum: 0
+        maximum: 86400
       description: Secondi da attendere prima di ricevere un'ulteriore risposta.
 
   securitySchemes:
@@ -265,6 +281,10 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+      description: >
+        Token JWT rilasciato dal sistema di autenticazione (conforme a RFC8725).
+        Il token deve essere incluso nell'header Authorization con prefisso Bearer.
+        Formato: Authorization: Bearer <token>.
     Agid-JWT-Signature:
       type: apiKey
       name: Agid-JWT-Signature
@@ -277,14 +297,19 @@ components:
   schemas:
     Problem:
       type: object
+      additionalProperties: false
       title: Dettaglio esito chiamata
       properties:
         type:
           type: string
+          format: uri
           description: Tipologia di errore o messaggio.
+          maxLength: 256
         title:
           type: string
           description: Titolo sintetico dell'errore.
+          maxLength: 256
+          pattern: '^.{1,256}$'
         status:
           type: integer
           format: int32
@@ -294,12 +319,18 @@ components:
         detail:
           type: string
           description: Descrizione dettagliata dell'errore.
+          maxLength: 4096
+          pattern: '^.{1,4096}$'
         result:
           type: object
+          additionalProperties: false
           description: Eventuale payload specifico dell'errore.
+          maxProperties: 50
         request_id:
           type: string
           description: Identificativo univoco della richiesta.
+          maxLength: 64
+          pattern: '^[a-zA-Z0-9\-]+$'
       required:
         - title
         - status
@@ -307,6 +338,7 @@ components:
 
     Person:
       type: object
+      additionalProperties: false
       x-jsonld-context:
         CPV: 'https://w3id.org/italia/onto/CPV/'
         tax_code: 'CPV:taxCode'
@@ -320,6 +352,7 @@ components:
           type: string
           description: ID univoco ANPR del professionista.
           example: "AB123456C"
+          pattern: '^[A-Z0-9]{9}$'
           minLength: 9
           maxLength: 9
         tax_code:
@@ -333,10 +366,14 @@ components:
           type: string
           description: Nome del professionista.
           example: MARIO
+          maxLength: 256
+          pattern: "^[a-zA-ZÀ-ÖØ-öø-ÿ .'-]+$"
         family_name:
           type: string
           description: Cognome del professionista.
           example: ROSSI
+          maxLength: 256
+          pattern: "^[a-zA-ZÀ-ÖØ-öø-ÿ .'-]+$"
       required:
         - anpr_id
         - tax_code
@@ -347,20 +384,27 @@ components:
       allOf:
         - $ref: '#/components/schemas/Person'
         - type: object
+          additionalProperties: false
           title: Professionista iscritto all'Albo
           properties:
             province:
               type: string
               description: Sigla della provincia dell'Ordine di iscrizione.
               example: RM
+              maxLength: 2
+              pattern: '^[A-Z]{2}$'
             ordine:
               type: string
               description: Denominazione dell'Ordine territoriale.
               example: Ordine Provinciale di Roma della Professione Sanitaria
+              maxLength: 512
+              pattern: "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9 .'\\-/()]+$"
             albo:
               type: string
               description: Tipo di Albo della professione sanitaria.
               example: PROFESSIONE_SANITARIA
+              maxLength: 256
+              pattern: '^[A-Z_]+$'
             data_iscrizione:
               type: string
               format: date
