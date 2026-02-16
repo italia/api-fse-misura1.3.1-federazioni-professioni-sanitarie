@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.0.0"
+  version: "1.0.1"
   title: Federazione Ordine Professioni Sanitarie - Verifica iscrizione professionista
   description: |
     API per la verifica dell'iscrizione di un professionista sanitario
@@ -209,12 +209,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
           headers:
-            RateLimit-Limit:
-              $ref: "#/components/headers/RateLimitLimitHeader"
-            RateLimit-Remaining:
-              $ref: "#/components/headers/RateLimitRemainingHeader"
-            RateLimit-Reset:
-              $ref: "#/components/headers/RateLimitResetHeader"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfterHeader"
             Agid-JWT-Signature:
               $ref: "#/components/headers/AgidJWTSignatureHeader"
             Digest:
@@ -237,6 +233,10 @@ paths:
           headers:
             Retry-After:
               $ref: "#/components/headers/RetryAfterHeader"
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/AgidJWTSignatureHeader"
+            Digest:
+              $ref: "#/components/headers/DigestHeader"
 
 tags:
   - name: status
@@ -283,7 +283,6 @@ components:
         example: eyJhbGc...1VrXfKTx-CUVz_puiwqkBhulrNKj2fA
       description: JWT contentente la firma della risposta secondo il pattern INTEGRITY_REST_02 del ModI.
     DigestHeader:
-      required: true
       schema:
         type: string
         example: SHA-256=72e18bdddf13c911b4dd562ee21979a5c9f235c3a01bd1426e857d8c1a282f41

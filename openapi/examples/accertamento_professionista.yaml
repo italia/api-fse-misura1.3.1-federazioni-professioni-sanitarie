@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.0.2"
+  version: "1.0.3"
   title: Federazione Ordine Professioni Sanitarie - Accertamento iscrizione professionista
   description: |
     API per l'accertamento dell'iscrizione di un professionista sanitario
@@ -72,7 +72,10 @@ paths:
               $ref: "#/components/headers/RateLimitRemainingHeader"
             RateLimit-Reset:
               $ref: "#/components/headers/RateLimitResetHeader"
-
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/AgidJWTSignatureHeader"
+            Digest:
+              $ref: "#/components/headers/DigestHeader"
         "503":
           description: Service Unavailable
           content:
@@ -217,12 +220,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
           headers:
-            RateLimit-Limit:
-              $ref: "#/components/headers/RateLimitLimitHeader"
-            RateLimit-Remaining:
-              $ref: "#/components/headers/RateLimitRemainingHeader"
-            RateLimit-Reset:
-              $ref: "#/components/headers/RateLimitResetHeader"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfterHeader"
             Agid-JWT-Signature:
               $ref: "#/components/headers/AgidJWTSignatureHeader"
             Digest:
@@ -236,10 +235,6 @@ paths:
           headers:
             Retry-After:
               $ref: "#/components/headers/RetryAfterHeader"
-            Agid-JWT-Signature:
-              $ref: "#/components/headers/AgidJWTSignatureHeader"
-            Digest:
-              $ref: "#/components/headers/DigestHeader"
         "503":
           description: Service Unavailable
           content:
@@ -299,7 +294,6 @@ components:
         example: eyJhbGc...1VrXfKTx-CUVz_puiwqkBhulrNKj2fA
       description: JWT contentente la firma della risposta secondo il pattern INTEGRITY_REST_02 del ModI.
     DigestHeader:
-      required: true
       schema:
         type: string
         example: SHA-256=72e18bdddf13c911b4dd562ee21979a5c9f235c3a01bd1426e857d8c1a282f41
