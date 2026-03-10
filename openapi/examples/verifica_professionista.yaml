@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.1.0"
+  version: "1.1.1"
   title: Federazione Ordine Professioni Sanitarie - Verifica iscrizione professionista
   description: |
     API per la verifica dell'iscrizione di un professionista sanitario
@@ -144,24 +144,40 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  is_registered:
-                    type: boolean
-                    description: |
-                      Indica se il professionista è attualmente presente nell'Albo, 
-                      indipendentemente dallo stato.
-                  status:
-                    type: string
-                    description: Stato corrente dell'iscrizione all'Albo.
-                    enum: [ATTIVO, SOSPESO, CANCELLATO, RADIATO]
-                  request_id:
-                    type: string
-                    description: Identificativo univoco della richiesta.
-                required:
-                  - is_registered
-                  - status
-                  - request_id
+                oneOf:
+                  - type: object
+                    description: Professionista iscritto (stato obbligatorio)
+                    properties:
+                      is_registered:
+                        type: boolean
+                        enum: [true]
+                        description: Indica che il professionista è presente nell'Albo.
+                      status:
+                        type: string
+                        description: Stato corrente dell'iscrizione all'Albo.
+                        enum: [ATTIVO, SOSPESO, CANCELLATO, RADIATO]
+                      request_id:
+                        type: string
+                        description: Identificativo univoco della richiesta.
+                    required:
+                      - is_registered
+                      - status
+                      - request_id
+                  - type: object
+                    description: Professionista non iscritto (stato assente)
+                    properties:
+                      is_registered:
+                        type: boolean
+                        enum: [false]
+                        description: Indica che il professionista NON è presente nell'Albo.
+                      request_id:
+                        type: string
+                        description: Identificativo univoco della richiesta.
+                    required:
+                      - is_registered
+                      - request_id
+                    not:
+                      required: [status]
           headers:
             Cache-Control:
               $ref: "#/components/headers/CacheControlHeader"
@@ -216,12 +232,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
           headers:
-            RateLimit-Limit:
-              $ref: "#/components/headers/RateLimitLimitHeader"
-            RateLimit-Remaining:
-              $ref: "#/components/headers/RateLimitRemainingHeader"
-            RateLimit-Reset:
-              $ref: "#/components/headers/RateLimitResetHeader"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfterHeader"
             Agid-JWT-Signature:
               $ref: "#/components/headers/AgidJWTSignatureHeader"
             Digest:
@@ -244,6 +256,10 @@ paths:
           headers:
             Retry-After:
               $ref: "#/components/headers/RetryAfterHeader"
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/AgidJWTSignatureHeader"
+            Digest:
+              $ref: "#/components/headers/DigestHeader"
 
 tags:
   - name: status
@@ -290,7 +306,6 @@ components:
         example: eyJhbGc...1VrXfKTx-CUVz_puiwqkBhulrNKj2fA
       description: JWT contentente la firma della risposta secondo il pattern INTEGRITY_REST_02 del ModI.
     DigestHeader:
-      required: true
       schema:
         type: string
         example: SHA-256=72e18bdddf13c911b4dd562ee21979a5c9f235c3a01bd1426e857d8c1a282f41

@@ -56,6 +56,10 @@ Le specifiche OpenAPI e le risorse semantiche saranno pubblicate progressivament
 
 Le specifiche adotteranno formati e standard riconosciuti a livello nazionale e internazionale. I dettagli specifici sulle risorse semantiche, le annotazioni e le convenzioni adottate saranno documentati progressivamente man mano che vengono definiti e validati.
 
+### Note sulla validazione
+
+- **Verifica iscrizione (FPROF-02)**: Il campo `status` nella risposta è obbligatorio se `is_registered` è impostato a `true`. Se il professionista non è iscritto (`is_registered: false`), lo stato **non deve** essere presente nel payload.
+
 ## ✅ Validazione delle specifiche
 
 Le specifiche OpenAPI pubblicate in questo repository sono **validate e conformi** alle linee guida italiane per le API REST.

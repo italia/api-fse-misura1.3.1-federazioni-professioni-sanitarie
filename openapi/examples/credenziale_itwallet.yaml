@@ -1,0 +1,367 @@
+openapi: 3.1.0
+info:
+  title: IT Wallet API - Health Professions Authentic Source
+  version: 0.2.0
+  description: |
+    # IT Wallet Authentic Source e-Service exposed via PDND.
+    Generic API for Health Professions for IT-Wallet.
+    Manages the retrieval of certified data for the digital professional card, including personal, 
+    professional data, and institutional logos.
+  termsOfService: "https://example.org/terms/"
+  contact:
+    name: Technical Support
+    url: "https://example.org/contacts/"
+    email: tech@example.org
+  x-api-id: HEALTH-PROFESSIONS-AS
+  x-summary: Health Professions Authentic Source for IT-Wallet.
+
+servers:
+  - url: https://api.example.org/v1
+    description: Production Server
+
+tags:
+  - name: status
+    description: Endpoint for monitoring service availability.
+  - name: credential
+    description: Services for retrieving professional credential claims.
+
+security:
+  - BearerAuth: []
+
+paths:
+  /status:
+    get:
+      tags: [status]
+      summary: Check status API
+      description: Verifies the operational status of the API for availability monitoring.
+      operationId: authenticSourceStatus
+      responses:
+        "200":
+          description: Service available
+          headers:
+            Cache-Control: { $ref: "#/components/headers/CacheControlHeader" }
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimitHeader" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemainingHeader" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "429":
+          description: Too Many Requests
+          headers:
+            Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "503":
+          description: Service Unavailable
+          headers:
+            Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+
+  /attribute-claims/{datasetId}:
+    post:
+      tags: [credential]
+      summary: Get Health Professional Attribute Claims
+      description: |
+        Retrieves full professional card data based on ANPR ID or Tax ID. 
+        Guarantees integrity via the INTEGRITY_REST_02 pattern.
+      operationId: attributeClaims
+      parameters:
+        - $ref: "#/components/parameters/datasetId"
+        - $ref: "#/components/parameters/Agid-JWT-Signature"
+        - $ref: "#/components/parameters/Digest"
+        - $ref: "#/components/parameters/Agid-JWT-TrackingEvidence"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CredentialClaimsRequest" }
+      responses:
+        "200":
+          description: OK - Card data successfully retrieved
+          headers:
+            Agid-JWT-Signature: 
+              description: >-
+                JWT containing the signature of the message headers whose integrity needs to be guaranteed, to comply with the INTEGRITY_REST_02 security pattern (see <a target="blank" href="https://italia.github.io/eid-wallet-it-docs/versione-corrente/en/e-service-pdnd.html">e-Service PDND</a>). <a target="blank" href="https://jwt.io/#debugger-io?token=ew0KICAiYWxnIjogIkVTMjU2IiwNCiAgImtpZCI6ICJhMWY1YzhkMi00YjM3LTRlOTEtYjBkMi03OWUzZjBjNGE4ZWYiLA0KICAidHlwIjogIkpXVCINCn0.ew0KICAiaXNzIjogIjEyMzRhYmNkLWVmNTYtZ2g3OC1pOWowLWtsbW5vcHFyc3R3eCIsDQogICJzdWIiOiAiMTIzNGFiY2QtZWY1Ni1naDc4LWk5ajAta2xtbm9wcXJzdHd4IiwNCiAgImF1ZCI6ICJodHRwczovL2ZydWl0b3JlLmV4YW1wbGUvZW50ZS1leGFtcGxlL3YxIiwNCiAgImlhdCI6IDE3MzMzOTc4NDAsDQogICJuYmYiOiAxNzMzNDAxNjI4LA0KICAiZXhwIjogMTczMzQwMTQ0MCwNCiAgImp0aSI6ICI4ZTEyZjRiNy05YzNhLTRmODMtOWI4ZC01MWEyYzdmNmU5ZDQiLA0KICAic2lnbmVkX2hlYWRlcnMiOiBbDQogICAgew0KICAgICAgImRpZ2VzdCI6ICJTSEEtMjU2PTc5YTIwYTc0NDMzNjQyMDMwMTgzMDYwMGFkOWJkY2E5OTM1OTNmODc2MjA5YTAwNGI1OTliNTgzMDk1YjBhNjEiDQogICAgfSwNCiAgICB7DQogICAgICAiY29udGVudC10eXBlIjogImFwcGxpY2F0aW9uL2pzb24iDQogICAgfQ0KICBdDQp9.DpuBNo2UgQhL7WLin4mpdZrbIpQq3tPvCX6HfktkxG7L5mk6a8OK1Hg0mQcZfFi3gelS-aL9kFS-6MoSy4csBg">EXAMPLE
+              required: true
+              schema: { type: string }
+            Digest: 
+              description: Digest of the message payload, to comply with the INTEGRITY_REST_02 security pattern. According to RFC 3230 Section 4.2 <a target="blank" href="https://www.rfc-editor.org/rfc/rfc3230.html#section-4.2">RFC 3230 §4.2</a>, the format MUST be the following digest-algorithm=encoded digest output.
+              required: true
+              schema: { type: string, example: SHA-256=79a20a744336420301830600ad9bdca993593f876209a004b599b583095b0a61 }
+            Cache-Control: { $ref: "#/components/headers/CacheControlHeader" }
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimitHeader" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemainingHeader" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CredentialClaimsResponse" }
+        "400":
+          description: Bad Request
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimitHeader" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemainingHeader" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "401":
+          description: Unauthorized
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimitHeader" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemainingHeader" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
+            WWW-Authenticate: { $ref: "#/components/headers/WWWAuthenticateHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "404":
+          description: Claims not found
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimitHeader" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemainingHeader" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "429":
+          description: Too Many Requests
+          headers:
+            Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "500":
+          description: Internal Server Error
+          headers:
+            Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "503":
+          description: Service Unavailable
+          headers:
+            Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: PDND Bearer Token
+
+  parameters:
+    datasetId:
+      in: path
+      name: datasetId
+      schema:
+        type: string
+      required: true
+      description: Identifier of the dataset as registered in the Authentic Source Registry
+    Agid-JWT-Signature:
+      name: Agid-JWT-Signature
+      in: header
+      description: >-
+        JWT containing the signature of the message headers whose integrity
+        needs to be guaranteed, to comply with the INTEGRITY_REST_02
+        security pattern (see <a target="blank"
+        href="https://italia.github.io/eid-wallet-it-docs/versione-corrente/en/e-service-pdnd.html">e-Service PDND</a>). <br/><br/>
+
+        <a target="blank" href="https://jwt.io/#debugger-io?token=eyJhbGciOiJFUzI1NiIsImtpZCI6ImQ0YzNiMmExLTk4NzYtNTQzMi0xMGZlLWRjYmE5ODc2NTQzMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4MjkxNGIzZi02MGIyLTQ1MjktYjRkNi0zZDRlNjdmMGE5MzMiLCJzdWIiOiI4MjkxNGIzZi02MGIyLTQ1MjktYjRkNi0zZDRlNjdmMGE5MzMiLCJhdWQiOiJodHRwczovL2F1dGhlbnRpYy1zb3VyY2UuZXhhbXBsZS5pdCIsImlhdCI6MTczMzM5Nzg0MCwibmJmIjoxNzMzNDAxNjI4LCJleHAiOjE3MzM0MDE0NDAsImp0aSI6ImQzZjdiMmM5LTI3NGEtNDJiNy04ZjhkLTJlOWQ4YjE3MzRiMCIsInNpZ25lZF9oZWFkZXJzIjpbeyJkaWdlc3QiOiJTSEEtMjU2PTcyZTE4YmRkZGYxM2M5MTFiNGRkNTYyZWUyMTk3OWE1YzlmMjM1YzNhMDFiZDE0MjZlODU3ZDhjMWEyODJmNDEifSx7ImNvbnRlbnQtdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24ifV19.tG5-P96CCA6N1IYC-xk4GumoVkA3NFolpbBn2vQ2e9vpWQ8f5Sm2l4-1VrXfKTx-CUVz_puiwqkBhulrNKj2fA">EXAMPLE
+        ON JWT.IO</a>
+      required: true
+      schema:
+        type: string
+        format: JWT
+        example: eyJhbGciOiJFUzI1NiIsImtpZCI6ImQ0YzNiMmExLTk4NzYtNTQzMi0xMGZlLWRjYmE5ODc2NTQzMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4MjkxNGIzZi02MGIyLTQ1MjktYjRkNi0zZDRlNjdmMGE5MzMiLCJhdWQiOiJodHRwczovL2F1dGhlbnRpYy1zb3VyY2UuZXhhbXBsZS5pdCIsImlhdCI6MTczMzM5Nzg0MCwibmJmIjoxNzMzNDAxNjI4LCJleHAiOjE3MzM0MDE0NDAsImp0aSI6ImQzZjdiMmM5LTI3NGEtNDJiNy04ZjhkLTJlOWQ4YjE3MzRiMCIsInNpZ25lZF9oZWFkZXJzIjpbeyJkaWdlc3QiOiJTSEEtMjU2PTcyZTE4YmRkZGYxM2M5MTFiNGRkNTYyZWUyMTk3OWE1YzlmMjM1YzNhMDFiZDE0MjZlODU3ZDhjMWEyODJmNDEifSx7ImNvbnRlbnQtdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24ifV19.tG5-P96CCA6N1IYC-xk4GumoVkA3NFolpbBn2vQ2e9vpWQ8f5Sm2l4-1VrXfKTx-CUVz_puiwqkBhulrNKj2fA
+    Digest:
+      name: Digest
+      in: header
+      description: >-
+        Digest of the message payload, to comply with the INTEGRITY_REST_02
+        security pattern. According to <a target="blank" href="https://www.rfc-editor.org/rfc/rfc3230.html#section-4.2">RFC
+        3230 §4.2</a>, the format MUST be the following: digest-algorithm=encoded
+        digest output.
+      required: true
+      schema:
+        type: string
+        example: SHA-256=72e18bdddf13c911b4dd562ee21979a5c9f235c3a01bd1426e857d8c1a282f41
+    Agid-JWT-TrackingEvidence:
+      name: Agid-JWT-TrackingEvidence
+      in: header
+      description: >-
+        If the Voucher type is Bearer, this header represents a JWT acting as a proof of possession, to comply with the REST_JWS_2021_POP security
+        pattern using the POP_TPoP implementation. Otherwise, it is a JWT containing the data tracked in the Consumer's domain, to comply with AUDIT_REST_02 (see <a target="blank"
+        href="https://italia.github.io/eid-wallet-it-docs/versione-corrente/en/e-service-pdnd.html">e-Service PDND</a>). <br/><br/>
+        <a target="blank" href="https://jwt.io/#debugger-io?token=eyJhbGciOiJFUzI1NiIsImtpZCI6ImQ0YzNiMmExLTk4NzYtNTQzMi0xMGZlLWRjYmE5ODc2NTQzMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4MjkxNGIzZi02MGIyLTQ1MjktYjRkNi0zZDRlNjdmMGE5MzMiLCJzdWIiOiI4MjkxNGIzZi02MGIyLTQ1MjktYjRkNi0zZDRlNjdmMGE5MzMiLCJhdWQiOiJodHRwczovL2F1dGhlbnRpYy1zb3VyY2UuZXhhbXBsZS5pdCIsImV4cCI6MTczMzA1MjYwMCwibmJmIjoxNzMzMDM2NDUwLCJpYXQiOjE3MzMwMzY0MDAsImp0aSI6ImE0YjVjNmQ3LWU4ZjktYWJjZC1lZjEyLTM0NTY3ODkwMTIzNCIsImRub25jZSI6NjUyODQyNDIxMzY4NSwicHVycG9zZUlkIjoiYjJjM2Q0ZTUtZjZnNy1oOGk5LWowazEtbG1ubzEyMzQ1Njc4IiwidXNlcklEIjoiYThiN2M2ZDUtZTRmMy1nMmgxLWk5ajAta2xtbm9wcXJzdHV2IiwibG9hIjoic3Vic3RhbnRpYWwifQ.y42yfMeW2H9h0b0j0BODUml8yF20stY9q3BwoVU5BB90afBj852Q0QlInncdhjXhUjLS1V76cGBxkutDNvxRNA">EXAMPLE
+        ON JWT.IO</a>
+      required: false
+      schema:
+        type: string
+        format: JWT
+        example: eyJhbGciOiJFUzI1NiIsImtpZCI6ImQ0YzNiMmExLTk4NzYtNTQzMi0xMGZlLWRjYmE5ODc2NTQzMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4MjkxNGIzZi02MGIyLTQ1MjktYjRkNi0zZDRlNjdmMGE5MzMiLCJhdWQiOiJodHRwczovL2F1dGhlbnRpYy1zb3VyY2UuZXhhbXBsZS5pdCIsImlhdCI6MTczMzM5Nzg0MCwibmJmIjoxNzMzNDAxNjI4LCJleHAiOjE3MzM0MDE0NDAsImp0aSI6ImQzZjdiMmM5LTI3NGEtNDJiNy04ZjhkLTJlOWQ4YjE3MzRiMCIsInNpZ25lZF9oZWFkZXJzIjpbeyJkaWdlc3QiOiJTSEEtMjU2PTcyZTE4YmRkZGYxM2M5MTFiNGRkNTYyZWUyMTk3OWE1YzlmMjM1YzNhMDFiZDE0MjZlODU3ZDhjMWEyODJmNDEifSx7ImNvbnRlbnQtdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24ifV19.tG5-P96CCA6N1IYC-xk4GumoVkA3NFolpbBn2vQ2e9vpWQ8f5Sm2l4-1VrXfKTx-CUVz_puiwqkBhulrNKj2fA
+
+  headers:
+    CacheControlHeader:
+      description: RFC 7234 directive (no-store for sensitive data).
+      schema: { type: string, enum: [no-store] }
+    RateLimitLimitHeader:
+      description: Maximum number of requests allowed in the time window.
+      schema: { type: integer, format: int32, minimum: 0 }
+    RateLimitRemainingHeader:
+      description: Number of requests remaining in the time window.
+      schema: { type: integer, format: int32, minimum: 0 }
+    RateLimitResetHeader:
+      description: UTC Epoch in seconds, corresponding to the time when the limit will be reset.
+      schema: { type: integer, format: int32, minimum: 0 }
+    RetryAfterHeader:
+      description: Seconds to wait before making a new request (RFC 6585).
+      schema: { type: integer, format: int32, minimum: 0 }
+    WWWAuthenticateHeader:
+      description: Indicates that the request cannot be satisfied because the Voucher is expired or invalid.
+      schema: { type: string, example: 'Bearer error="invalid_token", error_description="The access token expired"' }
+
+  schemas:
+    CredentialClaimsRequest:
+      type: object
+      required: [unique_id]
+      properties:
+        unique_id: { type: string, description: "Professional's ANPR ID or Tax ID" }
+
+    CredentialClaimsResponse:
+          type: object
+          properties:
+            userClaims:
+              description: List of User Claims.
+              type: object
+              required: [tax_id_code, given_name, family_name]
+              properties:
+                given_name:
+                  description: Current First Name.
+                  type: string
+                  example: "Mario"
+                family_name:
+                  description: Current Family Name.
+                  type: string
+                  example: "Rossi"
+                tax_id_code:
+                  description: National tax identification number.
+                  type: string
+                  pattern: '^(?:^(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$)'
+                  minLength: 16
+                  maxLength: 16
+                  example: "RSSMRA80A01H501Z"
+            attributeClaims:
+              description: List of Datasets of Attribute.
+              type: array
+              items:
+                type: object
+                required: [object_id, status, issuance_date, issuing_organization_name, registration_number]
+                properties:
+                  object_id:
+                    description: Unique identifier of the Dataset. It MUST NOT contain personal data. Required also if additionalProperties are not present. This parameter MUST be used to notify through Signal Hub data updating or availability.
+                    type: string
+                    format: uuid
+                    example: "6F9619FF-8B86-D011-B42D-00C04FC964FF"
+                  issuing_organization_name:
+                    description: Denominazione dell'Ordine Provinciale/Territoriale
+                    type: string
+                    maxLength: 150
+                    minLength: 5
+                    examples:
+                      - "OMCeO di Roma"
+                      - "Ordine dei Farmacisti della Provincia di Roma"
+                      - "ORDINE DELLA PROFESSIONE DI OSTETRICA/O INTERPROVINCIALE di BG, CR, CO, LC, LO, MI, MB, SO"
+                  registration_number:
+                    description: Numero iscrizione all'albo
+                    type: string
+                    minLength: 2
+                    maxLength: 12
+                    example: "0001234"
+                  professional_albo:
+                    description: Sigla Albo o Sezione di appartenenza (e.g. M=Medici, O=Odontoiatri, A=SezioneA, B=SezioneB)
+                    minLength: 1
+                    maxLength: 3
+                    type: string
+                    example: "MO"
+                  organization_logo:
+                    description: Logo Ordine Territoriale (max 10KB)
+                    type: string
+                    format: byte
+                    contentEncoding: base64
+                    contentMediaType: image/jpeg
+                  federation_logo:
+                    description: Logo Federazione Nazionale o Consiglio Nazionale (max 10KB)
+                    type: string
+                    format: byte
+                    contentEncoding: base64
+                    contentMediaType: image/jpeg
+                  issuance_date:
+                    description: Administrative validity start date of the Dataset (Data Rilascio)
+                    type: string
+                    format: date
+                    example: "2025-01-01"
+            metadataClaims:
+              description: List of Metadata of Attribute..
+              type: array
+              items:
+                type: object
+                required: [object_id, status, last_updated]
+                properties:
+                  object_id:
+                    description: Unique identifier of the Dataset.
+                    type: string
+                    format: uuid
+                    example: "6F9619FF-8B86-D011-B42D-00C04FC964FF"
+                  status:
+                    description: |
+                      Status of the Dataset. REQUIRED if additionalProperties of attributeClaims are present. Issued and Expired datasets fall within VALID; expiry is verified
+                      via metadata claims (e.g. expiry_date, nbf/exp). INVALID indicates active revocation by the AS.
+                      For how this status affects the Digital Credential lifecycle managed by the Credential
+                      Issuer, see <a target="blank" href="https://italia.github.io/eid-wallet-it-docs/versione-corrente/en/credential-revocation.html#status-update-by-authentic-sources">Status Update by Authentic Sources</a>.
+                    type: string
+                    enum:
+                      - VALID
+                      - INVALID
+                      - SUSPENDED
+                    x-enum-description:
+                      - VALID - Dataset is valid (includes Issued and Expired; expiry checked via metadata).
+                      - INVALID - Dataset has been actively revoked by the Authentic Source.
+                      - SUSPENDED - Dataset is temporarily invalid (typically reversible).
+                    example: "VALID"
+                  last_updated:
+                    description: Last time the status or attributes of the Dataset have been updated.
+                    type: string
+                    format: date-time
+                    example: "2025-01-15T10:30:00Z"
+
+    ProblemDetails:
+      type: object
+      description: Object conforming to RFC7807 for error reporting.
+      properties:
+        type:
+          type: string
+          format: uri
+          description: Absolute URI identifying the problem type.
+        title:
+          type: string
+          description: Short human-readable summary of the problem type.
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code generated for this occurrence of the problem.
+        detail:
+          type: string
+          description: Detailed human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          format: uri
+          description: Absolute URI identifying the specific occurrence of the problem.
+      required: [title, status, detail]
