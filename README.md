@@ -120,6 +120,7 @@ Di seguito è riportata la prima versione dello schema dei dati relativi all'att
 | validFrom | Data di Scadenza | NO | DATA |  |
 | validThrough | Data di Rilascio | NO | DATA |  |
 | identifier | Seriale carta | NO | ALFANUMERICO |  |
+| status | Stato professionale (ATTIVO, SOSPESO, CANCELLATO, RADIATO) | SI | ALFANUMERICO |  |
 | pensionFund | Numero Ente Nazionale di Previdenza | NO | ALFANUMERICO |  |
 
 Lo schema dati sopra riportato è da intendersi come proposta iniziale ed è aperto a modifiche e miglioramenti.
