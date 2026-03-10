@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.0.1"
+  version: "1.1.1"
   title: Federazione Ordine Professioni Sanitarie - Verifica iscrizione professionista
   description: |
     API per la verifica dell'iscrizione di un professionista sanitario
@@ -14,9 +14,9 @@ info:
 
       Il servizio offre un'opzione di verifica dell'iscrizione di un professionista
       all'Albo della Federazione Nazionale dato in input il `anpr_id` o il `tax_code`.
-      La risposta è di tipo booleano:
-      - `true`: il professionista è iscritto all'Albo,
-      - `false`: il professionista non è iscritto all'Albo.
+      La risposta è di tipo booleano integrata dallo stato:
+      - `is_registered`: indica se il professionista è presente nell'Albo,
+      - `status`: indica lo stato puntuale (ATTIVO, SOSPESO, etc.).
   contact:
     name: Federazione - API Support
     email: api-support@example-federation.it
@@ -148,12 +148,19 @@ paths:
                 properties:
                   is_registered:
                     type: boolean
-                    description: Indica se il professionista è iscritto all'Albo.
+                    description: |
+                      Indica se il professionista è attualmente presente nell'Albo, 
+                      indipendentemente dallo stato.
+                  status:
+                    type: string
+                    description: Stato corrente dell'iscrizione all'Albo.
+                    enum: [ATTIVO, SOSPESO, CANCELLATO, RADIATO]
                   request_id:
                     type: string
                     description: Identificativo univoco della richiesta.
                 required:
                   - is_registered
+                  - status
                   - request_id
           headers:
             Cache-Control:
