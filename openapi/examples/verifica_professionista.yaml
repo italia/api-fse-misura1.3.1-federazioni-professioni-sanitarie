@@ -144,24 +144,40 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  is_registered:
-                    type: boolean
-                    description: |
-                      Indica se il professionista è attualmente presente nell'Albo, 
-                      indipendentemente dallo stato.
-                  status:
-                    type: string
-                    description: Stato corrente dell'iscrizione all'Albo.
-                    enum: [ATTIVO, SOSPESO, CANCELLATO, RADIATO]
-                  request_id:
-                    type: string
-                    description: Identificativo univoco della richiesta.
-                required:
-                  - is_registered
-                  - status
-                  - request_id
+                oneOf:
+                  - type: object
+                    description: Professionista iscritto (stato obbligatorio)
+                    properties:
+                      is_registered:
+                        type: boolean
+                        enum: [true]
+                        description: Indica che il professionista è presente nell'Albo.
+                      status:
+                        type: string
+                        description: Stato corrente dell'iscrizione all'Albo.
+                        enum: [ATTIVO, SOSPESO, CANCELLATO, RADIATO]
+                      request_id:
+                        type: string
+                        description: Identificativo univoco della richiesta.
+                    required:
+                      - is_registered
+                      - status
+                      - request_id
+                  - type: object
+                    description: Professionista non iscritto (stato assente)
+                    properties:
+                      is_registered:
+                        type: boolean
+                        enum: [false]
+                        description: Indica che il professionista NON è presente nell'Albo.
+                      request_id:
+                        type: string
+                        description: Identificativo univoco della richiesta.
+                    required:
+                      - is_registered
+                      - request_id
+                    not:
+                      required: [status]
           headers:
             Cache-Control:
               $ref: "#/components/headers/CacheControlHeader"
