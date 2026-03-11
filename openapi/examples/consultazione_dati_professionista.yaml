@@ -1,9 +1,9 @@
 openapi: 3.0.0
 info:
   version: "1.0.3"
-  title: Federazione Ordine Professioni Sanitarie - Accertamento iscrizione professionista
+  title: Federazione Ordine Professioni Sanitarie - Consultazione dati professionista
   description: |
-    API per l'accertamento dell'iscrizione di un professionista sanitario
+    API per la consultazione dei dati di iscrizione di un professionista sanitario
     all'Albo della Federazione Nazionale.
 
     Parametri di ricerca (alternativi):
@@ -20,7 +20,7 @@ info:
     email: api-support@example-federation.it
   termsOfService: "https://portale.example-federation.it/cerca-prof/"
   x-api-id: FPROF-01
-  x-summary: Accertamento iscrizione professionista sanitario
+  x-summary: Consultazione dati professionista sanitario
 
 servers:
   - url: "https://api.example-federation.it/govway/rest/in/Ente/FPROF-01/v1"
@@ -94,9 +94,9 @@ paths:
     get:
       tags:
         - professionista
-      summary: Accertamento iscrizione professionista
+      summary: Consultazione dati professionista
       description: |
-        API per accertare l'iscrizione all'Albo di un professionista.
+        API per consultare i dati di iscrizione all'Albo di un professionista.
 
         Sono ammessi tre schemi alternativi di ricerca (oneOf):
         - solo `tax_code` (può restituire più risultati in caso di omocodie); oppure

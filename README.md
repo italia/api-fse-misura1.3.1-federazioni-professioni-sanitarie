@@ -52,6 +52,25 @@ Il repository è organizzato nelle seguenti directory:
 
 Le specifiche OpenAPI e le risorse semantiche saranno pubblicate progressivamente nella directory `openapi/`. Gli esempi pratici di utilizzo delle API saranno forniti direttamente nelle specifiche OpenAPI.
 
+## 📡 E-service disponibili
+
+I nomi degli e-service e dei template indicati di seguito rappresentano una **linea guida standard** che le Federazioni sono invitate a seguire per garantire uniformità nell'ecosistema PDND.
+
+Eventuali proposte di modifica ai nomi dei servizi dovrebbero essere motivate esclusivamente da **peculiarità della singola Federazione** (es. *Consultazione Dati Infermieri* invece di *Consultazione dati professionista*) e non da preferenze di natura tecnica o generica (es. evitare rinomine come *GetProfessionalData* o *ServizioAnagrafica* che si discostano dal modello semantico condiviso).
+
+### E-service principali
+
+| E-service                                                                                                                                 | Descrizione |
+|-------------------------------------------------------------------------------------------------------------------------------------------|-------------|
+| [**Verifica iscrizione**](openapi/examples/verifica_professionista.yaml)                                                                  | API per la verifica tecnica dell'iscrizione di un professionista all'Albo (esito booleano e stato professionale). |
+| [**Consultazione dati professionista**](openapi/examples/consultazione_dati_professionista.yaml)<br>(ex _Accertamento dati professionista_) | API per la consultazione dei dati di dettaglio relativi all'iscrizione di un professionista sanitario. |
+
+### Template E-service
+
+| Template | Descrizione |
+|----------|-------------|
+| [**Credenziale IT Wallet**](openapi/examples/credenziale_itwallet.yaml) | Template per l'erogazione della credenziale professionale digitale all'interno dell'ecosistema IT Wallet. |
+
 ## 📐 Standard e formati
 
 Le specifiche adotteranno formati e standard riconosciuti a livello nazionale e internazionale. I dettagli specifici sulle risorse semantiche, le annotazioni e le convenzioni adottate saranno documentati progressivamente man mano che vengono definiti e validati.
@@ -62,7 +81,7 @@ Le specifiche adotteranno formati e standard riconosciuti a livello nazionale e 
 
 ## ✅ Validazione delle specifiche
 
-Le specifiche OpenAPI pubblicate in questo repository sono **validate e conformi** alle linee guida italiane per le API REST.
+Le specifiche OpenAPI pubblicate in questo repository sono **validate e conformi** al Modello per l'interopeabilità tecnica.
 
 **Strumento di validazione ufficiale**: [OAS Checker Italia](https://italia.github.io/api-oas-checker/)
 
@@ -78,7 +97,7 @@ Lo strumento OAS Checker Italia è disponibile come:
 - **Interfaccia web**: https://italia.github.io/api-oas-checker/
 - **CLI e GitHub Action**: https://github.com/italia/api-oas-checker
 
-💡 **Raccomandazione**: utilizzare il profilo **"Italian Guidelines Full"** per garantire la massima conformità agli standard nazionali.
+💡 **Attenzione**: utilizzare il profilo **"Italian Guidelines Full"** per garantire la massima conformità agli standard nazionali.
 
 # 📣 Discussions e Issues
 
@@ -124,7 +143,6 @@ Di seguito è riportata la prima versione dello schema dei dati relativi all'att
 | validFrom | Data di Scadenza | NO | DATA |  |
 | validThrough | Data di Rilascio | NO | DATA |  |
 | identifier | Seriale carta | NO | ALFANUMERICO |  |
-| status | Stato professionale (ATTIVO, SOSPESO, CANCELLATO, RADIATO) | SI | ALFANUMERICO |  |
 | pensionFund | Numero Ente Nazionale di Previdenza | NO | ALFANUMERICO |  |
 
 Lo schema dati sopra riportato è da intendersi come proposta iniziale ed è aperto a modifiche e miglioramenti.
