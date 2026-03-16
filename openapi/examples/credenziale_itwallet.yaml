@@ -46,6 +46,16 @@ paths:
           content:
             application/problem+json:
               schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "401":
+          description: Unauthorized
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimitHeader" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemainingHeader" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
+            WWW-Authenticate: { $ref: "#/components/headers/WWWAuthenticateHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
         "429":
           description: Too Many Requests
           headers:
@@ -263,7 +273,7 @@ components:
               type: array
               items:
                 type: object
-                required: [object_id, status, issuance_date, issuing_organization_name, registration_number]
+                required: [object_id, issuance_date, issuing_organization_name, registration_number]
                 properties:
                   object_id:
                     description: Unique identifier of the Dataset. It MUST NOT contain personal data. Required also if additionalProperties are not present. This parameter MUST be used to notify through Signal Hub data updating or availability.
