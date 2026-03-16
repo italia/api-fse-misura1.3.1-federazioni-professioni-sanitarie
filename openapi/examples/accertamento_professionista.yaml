@@ -59,6 +59,23 @@ paths:
               $ref: "#/components/headers/AgidJWTSignatureHeader"
             Digest:
               $ref: "#/components/headers/DigestHeader"
+        "401":
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          headers:
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimitHeader"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemainingHeader"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitResetHeader"
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/AgidJWTSignatureHeader"
+            Digest:
+              $ref: "#/components/headers/DigestHeader"
         "429":
           description: Too Many Requests
           content:
