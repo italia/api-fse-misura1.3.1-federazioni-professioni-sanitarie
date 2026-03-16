@@ -108,45 +108,37 @@ paths:
         stato e data di iscrizione.
       operationId: checkProfessionista
       parameters:
-        - name: filtro
+        - name: anpr_id
           in: query
-          required: true
-          description: |
-            Oggetto di filtro per la ricerca del professionista.
-            Deve rispettare **esattamente uno** degli schemi previsti:
-            - solo `tax_code` (può restituire più risultati in caso di omocodie); oppure
-            - `given_name` + `family_name` (può restituire più risultati); oppure
-            - solo `anpr_id` (restituisce un risultato univoco).
-          style: form
-          explode: true
+          required: false
+          description: ID univoco ANPR del professionista.
           schema:
-            type: object
-            additionalProperties: false
-            properties:
-              anpr_id:
-                type: string
-                description: ID univoco ANPR del professionista.
-                example: "AB123456C"
-                minLength: 9
-                maxLength: 9
-              tax_code:
-                type: string
-                description: Tax Identification Number / Codice Fiscale
-                example: RSSMRA80A01F205D
-                pattern: '^(?:^(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$)'
-                minLength: 16
-                maxLength: 16
-              given_name:
-                type: string
-                description: Nome del professionista.
-                nullable: true
-              family_name:
-                type: string
-                description: Cognome del professionista.
-            oneOf:
-              - required: [anpr_id]
-              - required: [tax_code]
-              - required: [given_name, family_name]
+            type: string
+            example: "AB123456C"
+            minLength: 9
+            maxLength: 9
+        - name: tax_code
+          in: query
+          required: false
+          description: Tax Identification Number / Codice Fiscale
+          schema:
+            type: string
+            example: RSSMRA80A01F205D
+            pattern: '^(?:^(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$)'
+            minLength: 16
+            maxLength: 16
+        - name: given_name
+          in: query
+          required: false
+          description: Nome del professionista.
+          schema:
+            type: string
+        - name: family_name
+          in: query
+          required: false
+          description: Cognome del professionista.
+          schema:
+            type: string
       responses:
         "200":
           description: Ricerca eseguita con successo
@@ -292,7 +284,7 @@ components:
         type: string
         format: JWT
         example: eyJhbGc...1VrXfKTx-CUVz_puiwqkBhulrNKj2fA
-      description: JWT contentente la firma della risposta secondo il pattern INTEGRITY_REST_02 del ModI.
+      description: JWT contenente la firma della risposta secondo il pattern INTEGRITY_REST_02 del ModI.
     DigestHeader:
       schema:
         type: string

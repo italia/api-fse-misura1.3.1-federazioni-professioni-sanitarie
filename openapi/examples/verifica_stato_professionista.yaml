@@ -13,9 +13,9 @@ info:
     Regole di utilizzo:
 
       Il servizio offre un'opzione di verifica dell'iscrizione di un professionista
-      all'Albo della Federazione Nazionale dato in input il `anpr_id` o il `tax_code`.
-      La risposta è di tipo booleano integrata dallo stato:
-      - `status`: indica lo stato puntuale (ATTIVO, SOSPESO, etc.).
+      all'Albo della Federazione Nazionale dato in input l' `anpr_id` o il `tax_code`.
+      La risposta restituisce lo stato dell'iscrizione:
+      - `status`: indica lo stato puntuale (ATTIVO, SOSPESO, NON_ISCRITTO, etc.).
   contact:
     name: Federazione - API Support
     email: api-support@example-federation.it
@@ -107,36 +107,25 @@ paths:
         ma solo l'esito della verifica.
       operationId: verifyProfessionista
       parameters:
-        - name: filtro
+        - name: anpr_id
           in: query
-          required: true
-          description: |
-            Oggetto di filtro per la ricerca del professionista.
-            Deve rispettare **esattamente uno** degli schemi previsti:
-            - solo `tax_code`
-            - solo `anpr_id`
-          style: form
-          explode: true
+          required: false
+          description: ID univoco ANPR del professionista.
           schema:
-            type: object
-            additionalProperties: false
-            properties:
-              anpr_id:
-                type: string
-                description: ID univoco ANPR del professionista.
-                example: "AB123456C"
-                minLength: 9
-                maxLength: 9
-              tax_code:
-                type: string
-                description: Tax Identification Number / Codice Fiscale
-                example: RSSMRA80A01F205D
-                pattern: '^(?:^(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$)'
-                minLength: 16
-                maxLength: 16
-            oneOf:
-              - required: [anpr_id]
-              - required: [tax_code]
+            type: string
+            example: "AB123456C"
+            minLength: 9
+            maxLength: 9
+        - name: tax_code
+          in: query
+          required: false
+          description: Tax Identification Number / Codice Fiscale
+          schema:
+            type: string
+            example: RSSMRA80A01F205D
+            pattern: '^(?:^(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$)'
+            minLength: 16
+            maxLength: 16
       responses:
         "200":
           description: Ricerca eseguita con successo
@@ -149,7 +138,7 @@ paths:
                   status:
                     type: string
                     description: Stato corrente dell'iscrizione all'Albo.
-                    enum: [ATTIVO, SOSPESO, CANCELLATO, RADIATO]
+                    enum: [ATTIVO, SOSPESO, CANCELLATO, RADIATO, NON_ISCRITTO]
                   request_id:
                     type: string
                     description: Identificativo univoco della richiesta.
@@ -281,7 +270,7 @@ components:
         type: string
         format: JWT
         example: eyJhbGc...1VrXfKTx-CUVz_puiwqkBhulrNKj2fA
-      description: JWT contentente la firma della risposta secondo il pattern INTEGRITY_REST_02 del ModI.
+      description: JWT contenente la firma della risposta secondo il pattern INTEGRITY_REST_02 del ModI.
     DigestHeader:
       schema:
         type: string
