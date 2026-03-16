@@ -13,9 +13,9 @@ info:
     Regole di utilizzo:
 
       Il servizio offre un'opzione di verifica dell'iscrizione di un professionista
-      all'Albo della Federazione Nazionale dato in input il `anpr_id` o il `tax_code`.
-      La risposta è di tipo booleano integrata dallo stato:
-      - `status`: Certifica che il professionista è iscritto all'Albo e che la sua posizione risulta attiva (non sospesa, radiata o cancellata).
+      all'Albo della Federazione Nazionale dato in input l' `anpr_id` o il `tax_code`.
+      La risposta è di tipo booleano:
+      - `is_registered`: Certifica che il professionista è iscritto all'Albo e che la sua posizione risulta attiva (non sospesa, radiata o cancellata).
   contact:
     name: Federazione - API Support
     email: api-support@example-federation.it
@@ -148,7 +148,6 @@ paths:
                 properties:
                   is_registered:
                     type: boolean
-                    enum: [true]
                     description: Certifica che il professionista è iscritto all'Albo e che la sua posizione risulta attiva (non sospesa, radiata o cancellata).
                   request_id:
                     type: string
@@ -281,7 +280,7 @@ components:
         type: string
         format: JWT
         example: eyJhbGc...1VrXfKTx-CUVz_puiwqkBhulrNKj2fA
-      description: JWT contentente la firma della risposta secondo il pattern INTEGRITY_REST_02 del ModI.
+      description: JWT contenente la firma della risposta secondo il pattern INTEGRITY_REST_02 del ModI.
     DigestHeader:
       schema:
         type: string

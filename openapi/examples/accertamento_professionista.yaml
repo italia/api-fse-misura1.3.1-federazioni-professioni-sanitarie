@@ -292,7 +292,7 @@ components:
         type: string
         format: JWT
         example: eyJhbGc...1VrXfKTx-CUVz_puiwqkBhulrNKj2fA
-      description: JWT contentente la firma della risposta secondo il pattern INTEGRITY_REST_02 del ModI.
+      description: JWT contenente la firma della risposta secondo il pattern INTEGRITY_REST_02 del ModI.
     DigestHeader:
       schema:
         type: string
