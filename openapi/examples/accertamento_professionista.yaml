@@ -29,7 +29,6 @@ servers:
 paths:
   /status:
     get:
-      security: []
       tags:
         - status
       summary: Verifica stato del servizio
