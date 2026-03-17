@@ -83,12 +83,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
           headers:
-            RateLimit-Limit:
-              $ref: "#/components/headers/RateLimitLimitHeader"
-            RateLimit-Remaining:
-              $ref: "#/components/headers/RateLimitRemainingHeader"
-            RateLimit-Reset:
-              $ref: "#/components/headers/RateLimitResetHeader"
+            Retry-After:
+              $ref: "#/components/headers/RetryAfterHeader"
             Agid-JWT-Signature:
               $ref: "#/components/headers/AgidJWTSignatureHeader"
             Digest:
