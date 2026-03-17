@@ -1,30 +1,35 @@
 openapi: 3.0.0
 info:
-  version: "1.2.0"
-  title: Federazione Ordine Professioni Sanitarie - Verifica stato iscrizione professionista
+  version: "1.0.0"
+  title: Federazione Ordine Professioni Sanitarie - Verifica status professionista
   description: |
-    API per la verifica dello stato dell'iscrizione di un professionista sanitario
-    all'Albo della Federazione Nazionale.
+    API per la verifica dell'iscrizione di un professionista sanitario
+    all'Albo della Federazione Nazionale e del relativo stato,
+    determinato dalla combinazione delle condizioni di “iscritto” e “attivo”
+    (non sospeso, non radiato, non cancellato).
 
     Parametri di ricerca (alternativi):
     - `anpr_id` (ID univoco ANPR)
     - `tax_code` (Codice Fiscale)
 
     Regole di utilizzo:
-      Il servizio offre un'opzione di verifica dell'iscrizione di un professionista
-      all'Albo della Federazione Nazionale dato in input l' `anpr_id` o il `tax_code`.
-      La risposta restituisce lo stato dell'iscrizione:
-      - `status`: indica lo stato puntuale (ATTIVO, SOSPESO, NON_ISCRITTO, etc.).
+
+      API per la verifica dell'iscrizione di un professionista sanitario
+      all'Albo della Federazione Nazionale e del relativo stato,
+      determinato dalla combinazione delle condizioni di “iscritto” e “attivo”
+      dato in input l' `anpr_id` o il `tax_code`.
+      La risposta è di tipo booleano:
+      - `is_active`: Certifica che il professionista è iscritto all'Albo e che la sua posizione risulta attiva (non sospesa, radiata o cancellata).
   contact:
     name: Federazione - API Support
     email: api-support@example-federation.it
   termsOfService: "https://portale.example-federation.it/cerca-prof/"
-  x-api-id: FPROF-02
-  x-summary: Verifica iscrizione professionista sanitario
+  x-api-id: FPROF-03
+  x-summary: Verifica status professionista sanitario
 
 servers:
-  - url: "https://api.example-federation.it/govway/rest/in/Ente/FPROF-02/v1"
-    description: Ambiente di produzione - Verifica iscrizione professionista
+  - url: "https://api.example-federation.it/govway/rest/in/Ente/FPROF-03/v1"
+    description: Ambiente di produzione - Verifica status professionista
 
 paths:
   /status:
@@ -48,6 +53,23 @@ paths:
           headers:
             Cache-Control:
               $ref: "#/components/headers/CacheControlHeader"
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimitHeader"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemainingHeader"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitResetHeader"
+            Agid-JWT-Signature:
+              $ref: "#/components/headers/AgidJWTSignatureHeader"
+            Digest:
+              $ref: "#/components/headers/DigestHeader"
+        "401":
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          headers:
             RateLimit-Limit:
               $ref: "#/components/headers/RateLimitLimitHeader"
             RateLimit-Remaining:
@@ -89,32 +111,46 @@ paths:
     get:
       tags:
         - professionista
-      summary: Verifica iscrizione professionista
+      summary: Verifica status professionista
       description: |
-        API per verificare l'iscrizione all'Albo di un professionista.
+        Sono ammessi due schemi alternativi di ricerca (oneOf):
+        - solo `tax_code`
+        - solo `anpr_id`
 
-        Fornire esattamente uno dei parametri di ricerca.
-      operationId: verifyProfessionista
+        La risposta NON restituisce dati anagrafici o liste,
+        ma solo l'esito booleano della verifica.
+      operationId: verifyStatusProfessionista
       parameters:
-        - name: anpr_id
+        - name: filtro
           in: query
-          required: false
-          description: ID univoco ANPR del professionista.
+          required: true
+          description: |
+            Oggetto di filtro per la ricerca del professionista.
+            Deve rispettare **esattamente uno** degli schemi previsti:
+            - solo `tax_code`
+            - solo `anpr_id`
+          style: form
+          explode: true
           schema:
-            type: string
-            example: "AB123456C"
-            minLength: 9
-            maxLength: 9
-        - name: tax_code
-          in: query
-          required: false
-          description: Tax Identification Number / Codice Fiscale
-          schema:
-            type: string
-            example: RSSMRA80A01F205D
-            pattern: '^(?:^(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$)'
-            minLength: 16
-            maxLength: 16
+            type: object
+            additionalProperties: false
+            properties:
+              anpr_id:
+                type: string
+                description: ID univoco ANPR del professionista.
+                example: "AB123456C"
+                minLength: 9
+                maxLength: 9
+              tax_code:
+                type: string
+                description: Tax Identification Number / Codice Fiscale
+                example: RSSMRA80A01F205D
+                pattern: '^(?:^(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$)'
+                minLength: 16
+                maxLength: 16
+            oneOf:
+              - required: [anpr_id]
+              - required: [tax_code]
       responses:
         "200":
           description: Ricerca eseguita con successo
@@ -122,17 +158,16 @@ paths:
             application/json:
               schema:
                 type: object
-                description: Professionista iscritto (stato obbligatorio)
+                description: Professionista iscritto e attivo (stato obbligatorio)
                 properties:
-                  status:
-                    type: string
-                    description: Stato corrente dell'iscrizione all'Albo.
-                    enum: [ATTIVO, SOSPESO, CANCELLATO, RADIATO, NON_ISCRITTO]
+                  is_active:
+                    type: boolean
+                    description: Certifica che il professionista è iscritto all'Albo e che la sua posizione risulta attiva (non sospesa, radiata o cancellata).
                   request_id:
                     type: string
                     description: Identificativo univoco della richiesta.
                 required:
-                  - status
+                  - is_active
           headers:
             Cache-Control:
               $ref: "#/components/headers/CacheControlHeader"
@@ -220,7 +255,7 @@ tags:
   - name: status
     description: Endpoint di health check dell'API.
   - name: professionista
-    description: API relative ai professionisti iscritti all'Albo.
+    description: API relative ai professionisti iscritti all'Albo e attivi.
 
 components:
   headers:
