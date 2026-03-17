@@ -1,9 +1,9 @@
 openapi: 3.0.0
 info:
   version: "1.2.0"
-  title: Federazione Ordine Professioni Sanitarie - Verifica stato iscrizione professionista
+  title: Federazione Ordine Professioni Sanitarie - Accertamento status iscrizione professionista
   description: |
-    API per la verifica dello stato dell'iscrizione di un professionista sanitario
+    API per l'accertamento dello stato dell'iscrizione di un professionista sanitario
     all'Albo della Federazione Nazionale.
 
     Parametri di ricerca (alternativi):
@@ -12,7 +12,7 @@ info:
 
     Regole di utilizzo:
 
-      Il servizio offre un'opzione di verifica dell'iscrizione di un professionista
+      Il servizio offre un'opzione di accertamento dell'iscrizione di un professionista
       all'Albo della Federazione Nazionale dato in input l' `anpr_id` o il `tax_code`.
       La risposta restituisce lo stato dell'iscrizione:
       - `status`: indica lo stato puntuale (ATTIVO, SOSPESO, NON_ISCRITTO, etc.).
@@ -21,11 +21,11 @@ info:
     email: api-support@example-federation.it
   termsOfService: "https://portale.example-federation.it/cerca-prof/"
   x-api-id: FPROF-02
-  x-summary: Verifica iscrizione professionista sanitario
+  x-summary: Accertamento status iscrizione professionista sanitario
 
 servers:
   - url: "https://api.example-federation.it/govway/rest/in/Ente/FPROF-02/v1"
-    description: Ambiente di produzione - Verifica iscrizione professionista
+    description: Ambiente di produzione - Accertamento status iscrizione professionista
 
 paths:
   /status:
@@ -107,9 +107,9 @@ paths:
     get:
       tags:
         - professionista
-      summary: Verifica iscrizione professionista
+      summary: Accertamento iscrizione professionista
       description: |
-        API per verificare l'iscrizione all'Albo di un professionista.
+        API per l'accertamento dello stato effettivo dell'iscrizione all'Albo di un professionista.
 
         Sono ammessi due schemi alternativi di ricerca (oneOf):
         - solo `tax_code`
@@ -117,7 +117,7 @@ paths:
 
         La risposta NON restituisce dati anagrafici o liste,
         ma solo l'esito della verifica.
-      operationId: verifyProfessionista
+      operationId: checkStatusProfessionista
       parameters:
         - name: filtro
           in: query

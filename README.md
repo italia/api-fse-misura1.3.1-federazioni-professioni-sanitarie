@@ -58,7 +58,8 @@ Le specifiche adotteranno formati e standard riconosciuti a livello nazionale e 
 
 ### Note sulla validazione
 
-- **Verifica iscrizione (FPROF-02)**: Il campo `status` nella risposta è obbligatorio se `is_registered` è impostato a `true`. Se il professionista non è iscritto (`is_registered: false`), lo stato **non deve** essere presente nel payload.
+- **Accertamento status (FPROF-02)**: Il campo `status` nella risposta indica lo stato dell'iscrizione (es. ATTIVO, SOSPESO, NON_ISCRITTO, etc.).
+- **Verifica status (FPROF-03)**: Il campo `is_active` nella risposta è di tipo booleano e certifica che il professionista è iscritto all'Albo e che la sua posizione risulta attiva (non sospesa, radiata o cancellata).
 
 ## ✅ Validazione delle specifiche
 
