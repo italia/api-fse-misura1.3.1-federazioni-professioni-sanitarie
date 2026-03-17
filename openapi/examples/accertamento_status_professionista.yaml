@@ -21,11 +21,11 @@ info:
     email: api-support@example-federation.it
   termsOfService: "https://portale.example-federation.it/cerca-prof/"
   x-api-id: FPROF-02
-  x-summary: Accertamento iscrizione professionista sanitario
+  x-summary: Accertamento status iscrizione professionista sanitario
 
 servers:
   - url: "https://api.example-federation.it/govway/rest/in/Ente/FPROF-02/v1"
-    description: Ambiente di produzione - Accertamento iscrizione professionista
+    description: Ambiente di produzione - Accertamento status iscrizione professionista
 
 paths:
   /status:
@@ -109,7 +109,7 @@ paths:
         - professionista
       summary: Accertamento iscrizione professionista
       description: |
-        API per accertamento dello stato effettivo dell'iscrizione all'Albo di un professionista.
+        API per l'accertamento dello stato effettivo dell'iscrizione all'Albo di un professionista.
 
         Sono ammessi due schemi alternativi di ricerca (oneOf):
         - solo `tax_code`
