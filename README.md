@@ -119,7 +119,7 @@ Di seguito è riportata la versione definitiva dello schema dei dati relativi al
 | membershipRegister | Albo o Sezione o Settore di appartenenza | FACOLTATIVO | ALFANUMERICO |  |
 | vatID | Numero di iscrizione all’albo | OBBLIGATORIO | ALFANUMERICO |  |
 | validThrough | Data di Rilascio | OBBLIGATORIO | DATA |  |
-| status | Stato di iscrizione del professionista (VALID, INVALID) | SI | ALFANUMERICO |  |
+| status | Stato di iscrizione del professionista (VALID, INVALID) | OBBLIGATORIO | ALFANUMERICO |  |
 
 
 
