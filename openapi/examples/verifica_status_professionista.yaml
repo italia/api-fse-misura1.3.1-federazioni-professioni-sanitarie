@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.0.0"
+  version: "1.0.4"
   title: Federazione Ordine Professioni Sanitarie - Verifica status professionista
   description: |
     API per la verifica dell'iscrizione di un professionista sanitario
@@ -107,10 +107,10 @@ paths:
             Digest:
               $ref: "#/components/headers/DigestHeader"
 
-  /verify-prof:
+  /verify-status-prof:
     get:
       tags:
-        - professionista
+        - professional
       summary: Verifica status professionista
       description: |
         Sono ammessi due schemi alternativi di ricerca (oneOf):
@@ -119,9 +119,9 @@ paths:
 
         La risposta NON restituisce dati anagrafici o liste,
         ma solo l'esito booleano della verifica.
-      operationId: verifyStatusProfessionista
+      operationId: verifyStatusProfessional
       parameters:
-        - name: filtro
+        - name: filter
           in: query
           required: true
           description: |
@@ -254,7 +254,7 @@ paths:
 tags:
   - name: status
     description: Endpoint di health check dell'API.
-  - name: professionista
+  - name: professional
     description: API relative ai professionisti iscritti all'Albo e attivi.
 
 components:

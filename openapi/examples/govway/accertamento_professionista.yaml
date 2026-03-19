@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.0.3"
+  version: "1.0.4"
   title: Federazione Ordine Professioni Sanitarie - Accertamento iscrizione professionista
   description: |
     API per l'accertamento dell'iscrizione di un professionista sanitario
@@ -88,13 +88,13 @@ paths:
   /check-prof:
     get:
       tags:
-        - professionista
+        - professional
       summary: Accertamento iscrizione professionista
       description: |
         API per accertare l'iscrizione all'Albo di un professionista.
 
         Fornire esattamente uno dei criteri di ricerca (solo tax_code, o solo anpr_id, o la coppia given_name/family_name).
-      operationId: checkProfessionista
+      operationId: checkProfessional
       parameters:
         - name: anpr_id
           in: query
@@ -232,7 +232,7 @@ paths:
 tags:
   - name: status
     description: Endpoint di health check dell'API.
-  - name: professionista
+  - name: professional
     description: API relative ai professionisti iscritti all'Albo.
 
 components:
@@ -364,24 +364,29 @@ components:
               type: string
               description: Sigla della provincia dell'Ordine di iscrizione.
               example: RM
-            ordine:
+            issuing_organization_name:
               type: string
               description: Denominazione dell'Ordine territoriale.
               example: Ordine Provinciale di Roma della Professione Sanitaria
-            albo:
+            professional_register:
               type: string
-              description: Tipo di Albo della professione sanitaria.
+              description: L'albo o la sezione specifica a cui appartiene il professionista sanitario.
               example: PROFESSIONE_SANITARIA
-            data_iscrizione:
+            registration_date:
               type: string
               format: date
               description: Data di iscrizione del professionista all'Albo (formato ISO 8601 YYYY-MM-DD).
               example: "2000-01-01"
+            registration_number:
+              type: string
+              description: Numero di iscrizione all'Albo.
+            professional_title:
+              type: string
+              description: Titolo professionale.
           required:
-            - province
-            - ordine
-            - albo
-            - data_iscrizione
+            - issuing_organization_name
+            - professional_register
+            - registration_date
 
 security:
   - bearerAuth: []
