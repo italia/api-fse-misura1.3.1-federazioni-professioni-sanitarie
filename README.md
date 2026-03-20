@@ -56,10 +56,16 @@ Le specifiche OpenAPI e le risorse semantiche saranno pubblicate progressivament
 
 Le specifiche adotteranno formati e standard riconosciuti a livello nazionale e internazionale. I dettagli specifici sulle risorse semantiche, le annotazioni e le convenzioni adottate saranno documentati progressivamente man mano che vengono definiti e validati.
 
-### Note sulla validazione
+### Note tecniche e di business
 
-- **Accertamento status (FPROF-02)**: Il campo `status` nella risposta indica lo stato dell'iscrizione (es. ATTIVO, SOSPESO, NON_ISCRITTO, etc.).
-- **Verifica status (FPROF-03)**: Il campo `is_active` nella risposta è di tipo booleano e certifica che il professionista è iscritto all'Albo e che la sua posizione risulta attiva (non sospesa, radiata o cancellata).
+- **Estensibilità degli e-service**: Gli e-service pubblicati possono essere estesi dalle singole Federazioni per rispondere a specifiche esigenze territoriali, a condizione che venga garantita la piena **retrocompatibilità** con lo standard qui definito. Tale facoltà di estensione **non si applica** all'e-service relativo a **IT-Wallet**, il cui schema deve rimanere rigorosamente conforme.
+- **Accertamento status (FPROF-02)**: Il campo `status` nella risposta indica lo stato dell'iscrizione (es. `ATTIVO`, `SOSPESO`, `NON_ISCRITTO`, etc.). In caso di professionista non trovato, il servizio restituisce **HTTP 200** con status **`NON_ISCRITTO`**.
+- **Verifica status (FPROF-03)**: Il campo `is_active` nella risposta è di tipo booleano e certifica che il professionista è iscritto all'Albo e che la sua posizione risulta attiva (non sospesa, radiata o cancellata). In caso di professionista non trovato, il servizio restituisce **HTTP 200** con `is_active: false`.
+- **Accertamento iscrizione (FPROF-01)**: Restituisce un elenco di professionisti corrispondenti ai criteri di ricerca. In caso di nessuna corrispondenza, il servizio restituisce **HTTP 200** con un array vuoto (`result: []`).
+
+In sintesi, per tutte le API, l'assenza di un professionista nei registri viene gestita con un esito di business negativo restituito con stato **HTTP 200**, evitando l'uso del codice HTTP 404.
+
+---
 
 ## ✅ Validazione delle specifiche
 
