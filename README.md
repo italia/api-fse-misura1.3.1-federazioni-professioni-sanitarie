@@ -44,13 +44,23 @@ Il repository è organizzato nelle seguenti directory:
 
 ```
 .
-├── openapi/          # Specifiche OpenAPI
+├── openapi/          # Specifiche OpenAPI (versione di riferimento 3.1.0)
 │   ├── schemas/      # Schemi e modelli dati
 │   └── examples/     # Esempi di request/response
+│       └── govway/   # Specifiche ottimizzate per GovWay/ModI (versione 3.0.0)
 └── docs/             # Documentazione aggiuntiva
 ```
 
 Le specifiche OpenAPI e le risorse semantiche saranno pubblicate progressivamente nella directory `openapi/`. Gli esempi pratici di utilizzo delle API saranno forniti direttamente nelle specifiche OpenAPI.
+
+### Compatibilità GovWay / ModI
+
+Per l'integrazione con il gateway **GovWay** e la relativa validazione dei pattern di sicurezza **ModI**, è disponibile una versione dedicata delle specifiche nella cartella `openapi/examples/govway/`. 
+
+Queste versioni:
+- Utilizzano lo standard **OpenAPI 3.0.0**.
+- Risolvono le incompatibilità note del validatore ModI (es. errore 107 su campi `examples`, `contentMediaType`, `contentEncoding`).
+- Mantengono la piena compatibilità semantica con la versione di riferimento.
 
 ## 📐 Standard e formati
 

@@ -1,0 +1,347 @@
+openapi: 3.0.0
+info:
+  title: IT Wallet API - Health Professions Authentic Source
+  version: 0.2.0
+  description: |
+    # IT Wallet Authentic Source e-Service exposed via PDND.
+    Generic API for Health Professions for IT-Wallet.
+    Manages the retrieval of certified data for the digital professional card, including personal, 
+    professional data, and institutional logos.
+  termsOfService: "https://example.org/terms/"
+  contact:
+    name: Technical Support
+    url: "https://example.org/contacts/"
+    email: tech@example.org
+  x-api-id: HEALTH-PROFESSIONS-AS
+  x-summary: Health Professions Authentic Source for IT-Wallet.
+
+servers:
+  - url: https://api.example.org/v1
+    description: Production Server
+
+tags:
+  - name: status
+    description: Endpoint for monitoring service availability.
+  - name: credential
+    description: Services for retrieving professional credential claims.
+
+security:
+  - BearerAuth: []
+
+paths:
+  /status:
+    get:
+      tags: [status]
+      summary: Check status API
+      description: Verifies the operational status of the API for availability monitoring.
+      operationId: authenticSourceStatus
+      responses:
+        "200":
+          description: Service available
+          headers:
+            Cache-Control: { $ref: "#/components/headers/CacheControlHeader" }
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimitHeader" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemainingHeader" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "401":
+          description: Unauthorized
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimitHeader" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemainingHeader" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
+            WWW-Authenticate: { $ref: "#/components/headers/WWWAuthenticateHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "429":
+          description: Too Many Requests
+          headers:
+            Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "503":
+          description: Service Unavailable
+          headers:
+            Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+
+  /attribute-claims/{datasetId}:
+    post:
+      tags: [credential]
+      summary: Get Health Professional Attribute Claims
+      description: |
+        Retrieves full professional card data based on ANPR ID or Tax ID. 
+        Guarantees integrity via the INTEGRITY_REST_02 pattern.
+      operationId: attributeClaims
+      parameters:
+        - $ref: "#/components/parameters/datasetId"
+        - $ref: "#/components/parameters/Agid-JWT-Signature"
+        - $ref: "#/components/parameters/Digest"
+        - $ref: "#/components/parameters/Agid-JWT-TrackingEvidence"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CredentialClaimsRequest" }
+      responses:
+        "200":
+          description: OK - Card data successfully retrieved
+          headers:
+            Agid-JWT-Signature: 
+              description: >-
+                JWT containing the signature of the message headers (INTEGRITY_REST_02).
+              required: true
+              schema: { type: string }
+            Digest: 
+              description: Digest of the message payload (INTEGRITY_REST_02).
+              required: true
+              schema: { type: string, example: SHA-256=79a20a744336420301830600ad9bdca993593f876209a004b599b583095b0a61 }
+            Cache-Control: { $ref: "#/components/headers/CacheControlHeader" }
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimitHeader" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemainingHeader" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CredentialClaimsResponse" }
+        "400":
+          description: Bad Request
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimitHeader" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemainingHeader" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "401":
+          description: Unauthorized
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimitHeader" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemainingHeader" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
+            WWW-Authenticate: { $ref: "#/components/headers/WWWAuthenticateHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "404":
+          description: Claims not found
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimitHeader" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemainingHeader" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "429":
+          description: Too Many Requests
+          headers:
+            Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "500":
+          description: Internal Server Error
+          headers:
+            Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "503":
+          description: Service Unavailable
+          headers:
+            Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: PDND Bearer Token
+
+  parameters:
+    datasetId:
+      in: path
+      name: datasetId
+      schema:
+        type: string
+      required: true
+      description: Identifier of the dataset as registered in the Authentic Source Registry
+    Agid-JWT-Signature:
+      name: Agid-JWT-Signature
+      in: header
+      description: >-
+        JWT containing the signature of the message headers (INTEGRITY_REST_02).
+      required: true
+      schema:
+        type: string
+        format: JWT
+    Digest:
+      name: Digest
+      in: header
+      description: >-
+        Digest of the message payload (INTEGRITY_REST_02).
+      required: true
+      schema:
+        type: string
+        example: SHA-256=72e18bdddf13c911b4dd562ee21979a5c9f235c3a01bd1426e857d8c1a282f41
+    Agid-JWT-TrackingEvidence:
+      name: Agid-JWT-TrackingEvidence
+      in: header
+      description: >-
+        JWT containing the data tracked in the Consumer's domain (AUDIT_REST_02).
+      required: true
+      schema:
+        type: string
+        format: JWT
+
+  headers:
+    CacheControlHeader:
+      description: RFC 7234 directive (no-store for sensitive data).
+      schema: { type: string, enum: [no-store] }
+    RateLimitLimitHeader:
+      description: Maximum number of requests allowed in the time window.
+      schema: { type: integer, format: int32, minimum: 0 }
+    RateLimitRemainingHeader:
+      description: Number of requests remaining in the time window.
+      schema: { type: integer, format: int32, minimum: 0 }
+    RateLimitResetHeader:
+      description: UTC Epoch in seconds, corresponding to the time when the limit will be reset.
+      schema: { type: integer, format: int32, minimum: 0 }
+    RetryAfterHeader:
+      description: Seconds to wait before making a new request (RFC 6585).
+      schema: { type: integer, format: int32, minimum: 0 }
+    WWWAuthenticateHeader:
+      description: Indicates that the request cannot be satisfied because the Voucher is expired or invalid.
+      schema: { type: string, example: 'Bearer error="invalid_token", error_description="The access token expired"' }
+
+  schemas:
+    CredentialClaimsRequest:
+      type: object
+      required: [unique_id]
+      properties:
+        unique_id: { type: string, description: "Professional's ANPR ID or Tax ID" }
+
+    CredentialClaimsResponse:
+      type: object
+      properties:
+        userClaims:
+          description: List of User Claims.
+          type: object
+          required: [tax_id_code, given_name, family_name]
+          properties:
+            given_name:
+              description: Current First Name.
+              type: string
+              example: "Mario"
+            family_name:
+              description: Current Family Name.
+              type: string
+              example: "Rossi"
+            tax_id_code:
+              description: National tax identification number.
+              type: string
+              pattern: '^(?:^(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$)'
+              minLength: 16
+              maxLength: 16
+              example: "RSSMRA80A01H501Z"
+        attributeClaims:
+          description: List of Datasets of Attribute.
+          type: array
+          items:
+            type: object
+            required: [object_id, issuance_date, issuing_organization_name, registration_number]
+            properties:
+              object_id:
+                description: Unique identifier of the Dataset.
+                type: string
+                format: uuid
+                example: "6F9619FF-8B86-D011-B42D-00C04FC964FF"
+              issuing_organization_name:
+                description: Denominazione dell'Ordine Provinciale/Territoriale
+                type: string
+                maxLength: 150
+                minLength: 5
+                example: "OMCeO di Roma"
+              registration_number:
+                description: Numero iscrizione all'albo
+                type: string
+                minLength: 2
+                maxLength: 12
+                example: "0001234"
+              professional_albo:
+                description: Sigla Albo o Sezione di appartenenza
+                minLength: 1
+                maxLength: 3
+                type: string
+                example: "MO"
+              organization_logo:
+                description: Logo Ordine Territoriale (max 10KB)
+                type: string
+                format: byte
+              federation_logo:
+                description: Logo Federazione Nazionale o Consiglio Nazionale (max 10KB)
+                type: string
+                format: byte
+              issuance_date:
+                description: Administrative validity start date of the Dataset
+                type: string
+                format: date
+                example: "2025-01-01"
+        metadataClaims:
+          description: List of Metadata of Attribute.
+          type: array
+          items:
+            type: object
+            required: [object_id, status, last_updated]
+            properties:
+              object_id:
+                description: Unique identifier of the Dataset.
+                type: string
+                format: uuid
+                example: "6F9619FF-8B86-D011-B42D-00C04FC964FF"
+              status:
+                description: Status of the Dataset.
+                type: string
+                enum:
+                  - VALID
+                  - INVALID
+                  - SUSPENDED
+                example: "VALID"
+              last_updated:
+                description: Last time the status or attributes of the Dataset have been updated.
+                type: string
+                format: date-time
+                example: "2025-01-15T10:30:00Z"
+
+    ProblemDetails:
+      type: object
+      description: Object conforming to RFC7807 for error reporting.
+      properties:
+        type:
+          type: string
+          format: uri
+          description: Absolute URI identifying the problem type.
+        title:
+          type: string
+          description: Short human-readable summary of the problem type.
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code generated for this occurrence of the problem.
+        detail:
+          type: string
+          description: Detailed human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          format: uri
+          description: Absolute URI identifying the specific occurrence of the problem.
+      required: [title, status, detail]
