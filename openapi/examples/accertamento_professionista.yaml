@@ -116,8 +116,7 @@ paths:
         - `given_name` + `family_name` (può restituire più risultati).
 
         Il servizio restituisce un elenco di professionisti che corrispondono
-        ai criteri di ricerca, con le informazioni essenziali di iscrizione,
-        stato e data di iscrizione.
+        ai criteri di ricerca.
       operationId: checkProfessional
       parameters:
         - name: filter

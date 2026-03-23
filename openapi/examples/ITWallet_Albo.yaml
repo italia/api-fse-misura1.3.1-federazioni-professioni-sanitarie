@@ -306,13 +306,13 @@ components:
                     type: string
                     format: byte
                     contentEncoding: base64
-                    contentMediaType: image/jpeg
+                    contentMediaType: image/png
                   federation_logo:
                     description: Logo Federazione Nazionale o Consiglio Nazionale (max 10KB)
                     type: string
                     format: byte
                     contentEncoding: base64
-                    contentMediaType: image/jpeg
+                    contentMediaType: image/png
                   issuance_date:
                     description: Administrative validity start date of the Dataset (Data Rilascio)
                     type: string
