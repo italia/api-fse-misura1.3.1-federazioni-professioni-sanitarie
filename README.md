@@ -97,9 +97,7 @@ Nella logica di IT-Wallet, per ogni oggetto definito all'interno dell'array `att
 
 ### 3. Logica di interrogazione dell'e-service
 L'e-service deve garantire il supporto alle seguenti modalità di ricerca, fondamentali per l'integrazione con IT-Wallet:
-- **Ricerca tramite `unique_id` (Codice Fiscale o ID ANPR)**: Costituisce il metodo mandatorio per l'individuazione iniziale delle credenziali. In questo scenario, l'ente ha la facoltà di implementare una delle seguenti strategie di risposta:
-    - Restituire l'**elenco completo** di tutti i tesserini associati al professionista, inclusi quelli storici o non più validi (il cui stato sarà esplicitato nei relativi `metadataClaims`).
-    - Restituire **esclusivamente i tesserini attivi** alla data della richiesta.
+- **Ricerca tramite `unique_id` (Codice Fiscale o ID ANPR)**: Costituisce il metodo mandatorio per l'individuazione iniziale delle credenziali. In questo scenario, l'ente deve restituire **esclusivamente i tesserini attivi** alla data della richiesta.
 - **Ricerca tramite `object_id`**: Consente la risoluzione diretta del singolo tesserino associato (presente nel dataset) a partire dall'identificativo univoco precedentemente ottenuto o comunicato.
 
 ### 4. Ciclo di vita della credenziale e gestione degli identificativi
