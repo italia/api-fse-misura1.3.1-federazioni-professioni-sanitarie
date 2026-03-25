@@ -77,6 +77,38 @@ In sintesi, per tutte le API, l'assenza di un professionista nei registri viene 
 
 ---
 
+## 📢 Implementazione IT-Wallet: Chiarimenti Fondamentali
+
+> [!IMPORTANT]
+> Questa sezione contiene informazioni cruciali per la corretta implementazione degli e-service relativi a IT-Wallet. La conformità a questi requisiti è mandatoria.
+
+### 1. Definizione del `datasetId`
+Il `datasetId` non è un valore fisso globale, ma deve essere deciso arbitrariamente dalla singola Federazione in base al contesto. Esempi di valori suggeriti:
+- L'acronimo della federazione (es: `fofi`).
+- La professione specifica di cui si richiede il tesserino o l'attestazione (es: `tecnico-radiologo`).
+
+### 2. Correlazione tra `attributeClaims` e `metadataClaims`
+Nella logica di IT-Wallet, per ogni oggetto definito all'interno dell'array `attributeClaims` deve essere presente un corrispondente oggetto nell'array `metadataClaims`.
+- **Identificativo comune**: Il collegamento tra i due è garantito dall'uso del campo **`object_id`**, che deve essere un **UUID** identico per entrambi i claim riferiti allo stesso oggetto.
+- **Esempio pratico**: 
+    - In **`attributeClaims`** inseriamo i dati del tesserino (es. `registration_number: "0001234"`, `issuing_organization_name: "OMCeO di Roma"`, loghi in base64) associati a un `object_id: "6F9619FF-8B86-D011-B42D-00C04FC964FF"`.
+    - In **`metadataClaims`** inseriamo lo stato amministrativo di quel tesserino (es. `status: "VALID"`) e la data di ultimo aggiornamento (`last_updated`), utilizzando lo stesso `object_id: "6F9619FF-8B86-D011-B42D-00C04FC964FF"`.
+    Questa struttura permette a IT-Wallet di riconciliare correttamente l'attestazione digitale, separando i dati professionali dai metadati di stato e ciclo di vita.
+
+### 3. Logica di interrogazione dell'e-service
+L'e-service deve garantire il supporto alle seguenti modalità di ricerca, fondamentali per l'integrazione con IT-Wallet:
+- **Ricerca tramite `unique_id` (Codice Fiscale o ID ANPR)**: Costituisce il metodo mandatorio per l'individuazione iniziale delle credenziali. In questo scenario, l'ente deve restituire **esclusivamente i tesserini attivi** alla data della richiesta.
+- **Ricerca tramite `object_id`**: Consente la risoluzione diretta del singolo tesserino associato (presente nel dataset) a partire dall'identificativo univoco precedentemente ottenuto o comunicato.
+
+### 4. Ciclo di vita della credenziale e gestione degli identificativi
+La gestione della persistenza e della validità della credenziale digitale è affidata alla logica di business dell'ente erogatore:
+- **Aggiornamento di dati esistenti**: Per correzioni di errori materiali o aggiornamenti tecnici che non modificano la natura della credenziale, l'ente può aggiornare i claim mantenendo invariato l'**`object_id`**.
+- **Variazioni sostanziali e riemissione**: Qualora si verifichi una variazione rilevante dei dati (ad esempio il cambio dell'Ordine territoriale di appartenenza o modifiche che comporterebbero la riemissione fisica del tesserino), la procedura corretta prevede di:
+    1. **Invalidare** la credenziale precedente (impostando lo `status: "INVALID"` nei relativi `metadataClaims`).
+    2. **Generare una nuova credenziale** dotata di un nuovo e differente **`object_id`** (UUID).
+
+---
+
 ## ✅ Validazione delle specifiche
 
 Le specifiche OpenAPI pubblicate in questo repository sono **validate e conformi** alle linee guida italiane per le API REST.

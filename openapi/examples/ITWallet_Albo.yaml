@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: IT Wallet API - Health Professions Authentic Source
-  version: 0.2.0
+  version: 0.3.0
   description: |
     # IT Wallet Authentic Source e-Service exposed via PDND.
     Generic API for Health Professions for IT-Wallet.
@@ -244,114 +244,115 @@ components:
       required: [unique_id]
       properties:
         unique_id: { type: string, description: "Professional's ANPR ID or Tax ID" }
+        object_id: { type: string, description: "Unique identifier of the Credential dataset. If this parameter is present only the indicated dataset is returned" }
 
     CredentialClaimsResponse:
+      type: object
+      properties:
+        userClaims:
+          description: List of User Claims.
           type: object
+          required: [tax_id_code, given_name, family_name]
           properties:
-            userClaims:
-              description: List of User Claims.
-              type: object
-              required: [tax_id_code, given_name, family_name]
-              properties:
-                given_name:
-                  description: Current First Name.
-                  type: string
-                  example: "Mario"
-                family_name:
-                  description: Current Family Name.
-                  type: string
-                  example: "Rossi"
-                tax_id_code:
-                  description: National tax identification number.
-                  type: string
-                  pattern: '^(?:^(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$)'
-                  minLength: 16
-                  maxLength: 16
-                  example: "RSSMRA80A01H501Z"
-            attributeClaims:
-              description: List of Datasets of Attribute.
-              type: array
-              items:
-                type: object
-                required: [object_id, issuance_date, issuing_organization_name, registration_number]
-                properties:
-                  object_id:
-                    description: Unique identifier of the Dataset. It MUST NOT contain personal data. Required also if additionalProperties are not present. This parameter MUST be used to notify through Signal Hub data updating or availability.
-                    type: string
-                    format: uuid
-                    example: "6F9619FF-8B86-D011-B42D-00C04FC964FF"
-                  issuing_organization_name:
-                    description: Denominazione dell'Ordine Provinciale/Territoriale
-                    type: string
-                    maxLength: 150
-                    minLength: 5
-                    examples:
-                      - "OMCeO di Roma"
-                      - "Ordine dei Farmacisti della Provincia di Roma"
-                      - "ORDINE DELLA PROFESSIONE DI OSTETRICA/O INTERPROVINCIALE di BG, CR, CO, LC, LO, MI, MB, SO"
-                  registration_number:
-                    description: Numero iscrizione all'albo
-                    type: string
-                    minLength: 2
-                    maxLength: 12
-                    example: "0001234"
-                  professional_albo:
-                    description: Sigla Albo o Sezione di appartenenza (e.g. M=Medici, O=Odontoiatri, A=SezioneA, B=SezioneB)
-                    minLength: 1
-                    maxLength: 3
-                    type: string
-                    example: "MO"
-                  organization_logo:
-                    description: Logo Ordine Territoriale (max 10KB)
-                    type: string
-                    format: byte
-                    contentEncoding: base64
-                    contentMediaType: image/png
-                  federation_logo:
-                    description: Logo Federazione Nazionale o Consiglio Nazionale (max 10KB)
-                    type: string
-                    format: byte
-                    contentEncoding: base64
-                    contentMediaType: image/png
-                  issuance_date:
-                    description: Administrative validity start date of the Dataset (Data Rilascio)
-                    type: string
-                    format: date
-                    example: "2025-01-01"
-            metadataClaims:
-              description: List of Metadata of Attribute..
-              type: array
-              items:
-                type: object
-                required: [object_id, status, last_updated]
-                properties:
-                  object_id:
-                    description: Unique identifier of the Dataset.
-                    type: string
-                    format: uuid
-                    example: "6F9619FF-8B86-D011-B42D-00C04FC964FF"
-                  status:
-                    description: |
-                      Status of the Dataset. REQUIRED if additionalProperties of attributeClaims are present. Issued and Expired datasets fall within VALID; expiry is verified
-                      via metadata claims (e.g. expiry_date, nbf/exp). INVALID indicates active revocation by the AS.
-                      For how this status affects the Digital Credential lifecycle managed by the Credential
-                      Issuer, see <a target="blank" href="https://italia.github.io/eid-wallet-it-docs/versione-corrente/en/credential-revocation.html#status-update-by-authentic-sources">Status Update by Authentic Sources</a>.
-                    type: string
-                    enum:
-                      - VALID
-                      - INVALID
-                      - SUSPENDED
-                    x-enum-description:
-                      - VALID - Dataset is valid (includes Issued and Expired; expiry checked via metadata).
-                      - INVALID - Dataset has been actively revoked by the Authentic Source.
-                      - SUSPENDED - Dataset is temporarily invalid (typically reversible).
-                    example: "VALID"
-                  last_updated:
-                    description: Last time the status or attributes of the Dataset have been updated.
-                    type: string
-                    format: date-time
-                    example: "2025-01-15T10:30:00Z"
-
+            given_name:
+              description: Current First Name.
+              type: string
+              example: "Mario"
+            family_name:
+              description: Current Family Name.
+              type: string
+              example: "Rossi"
+            tax_id_code:
+              description: National tax identification number.
+              type: string
+              pattern: '^(?:^(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$)'
+              minLength: 16
+              maxLength: 16
+              example: "RSSMRA80A01H501Z"
+        attributeClaims:
+          description: List of Datasets of Attribute.
+          type: array
+          items:
+            type: object
+            required: [object_id, issuance_date, issuing_organization_name, registration_number]
+            properties:
+              object_id:
+                description: Unique identifier of the Dataset. It MUST NOT contain personal data. Required also if additionalProperties are not present. This parameter MUST be used to notify through Signal Hub data updating or availability.
+                type: string
+                format: uuid
+                example: "6F9619FF-8B86-D011-B42D-00C04FC964FF"
+              issuing_organization_name:
+                description: Denominazione dell'Ordine Provinciale/Territoriale
+                type: string
+                maxLength: 150
+                minLength: 5
+                examples:
+                  - "OMCeO di Roma"
+                  - "Ordine dei Farmacisti della Provincia di Roma"
+                  - "ORDINE DELLA PROFESSIONE DI OSTETRICA/O INTERPROVINCIALE di BG, CR, CO, LC, LO, MI, MB, SO"
+              registration_number:
+                description: Numero iscrizione all'albo
+                type: string
+                minLength: 2
+                maxLength: 12
+                example: "0001234"
+              professional_albo:
+                description: Sigla Albo o Sezione di appartenenza (e.g. M=Medici, O=Odontoiatri, A=SezioneA, B=SezioneB)
+                minLength: 1
+                maxLength: 3
+                type: string
+                example: "MO"
+              organization_logo:
+                description: Logo Ordine Territoriale (max 10KB)
+                type: string
+                format: byte
+                contentEncoding: base64
+                contentMediaType: image/png
+              federation_logo:
+                description: Logo Federazione Nazionale o Consiglio Nazionale (max 10KB)
+                type: string
+                format: byte
+                contentEncoding: base64
+                contentMediaType: image/png
+              issuance_date:
+                description: Administrative validity start date of the Dataset (Data Rilascio)
+                type: string
+                format: date
+                example: "2025-01-01"
+        metadataClaims:
+          description: List of Metadata of Attribute.
+          type: array
+          items:
+            type: object
+            required: [object_id, status, last_updated]
+            properties:
+              object_id:
+                description: Unique identifier of the Dataset.
+                type: string
+                format: uuid
+                example: "6F9619FF-8B86-D011-B42D-00C04FC964FF"
+              status:
+                description: |
+                  Status of the Dataset. REQUIRED if additionalProperties of attributeClaims are present. Issued and Expired datasets fall within VALID; expiry is verified
+                  via metadata claims (e.g. expiry_date, nbf/exp). INVALID indicates active revocation by the AS.
+                  For how this status affects the Digital Credential lifecycle managed by the Credential
+                  Issuer, see <a target="blank" href="https://italia.github.io/eid-wallet-it-docs/versione-corrente/en/credential-revocation.html#status-update-by-authentic-sources">Status Update by Authentic Sources</a>.
+                type: string
+                enum:
+                  - VALID
+                  - INVALID
+                  - SUSPENDED
+                x-enum-description:
+                  - VALID - Dataset is valid (includes Issued and Expired; expiry checked via metadata).
+                  - INVALID - Dataset has been actively revoked by the Authentic Source.
+                  - SUSPENDED - Dataset is temporarily invalid (typically reversible).
+                example: "VALID"
+              last_updated:
+                description: Last time the status or attributes of the Dataset have been updated.
+                type: string
+                format: date-time
+                example: "2025-01-15T10:30:00Z"
+      required: [userClaims, attributeClaims, metadataClaims]
     ProblemDetails:
       type: object
       description: Object conforming to RFC7807 for error reporting.
