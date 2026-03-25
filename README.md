@@ -96,11 +96,11 @@ Nella logica di IT-Wallet, per ogni oggetto definito all'interno dell'array `att
     Questa struttura permette a IT-Wallet di riconciliare correttamente l'attestazione digitale, separando i dati professionali dai metadati di stato e ciclo di vita.
 
 ### 3. Logica di interrogazione dell'e-service
-Il comportamento dell'API varia in base ai parametri di ricerca utilizzati nella richiesta:
-- **Ricerca tramite `object_id`**: L'e-service deve restituire il singolo tesserino associato (presente nel dataset) corrispondente all'identificativo univoco fornito.
-- **Ricerca tramite `unique_id` (Codice Fiscale o ID ANPR)**: In questo scenario, l'ente ha la facoltà di implementare una delle seguenti strategie di risposta:
+L'e-service deve garantire il supporto alle seguenti modalità di ricerca, fondamentali per l'integrazione con IT-Wallet:
+- **Ricerca tramite `unique_id` (Codice Fiscale o ID ANPR)**: Costituisce il metodo mandatorio per l'individuazione iniziale delle credenziali. In questo scenario, l'ente ha la facoltà di implementare una delle seguenti strategie di risposta:
     - Restituire l'**elenco completo** di tutti i tesserini associati al professionista, inclusi quelli storici o non più validi (il cui stato sarà esplicitato nei relativi `metadataClaims`).
     - Restituire **esclusivamente i tesserini attivi** alla data della richiesta.
+- **Ricerca tramite `object_id`**: Consente la risoluzione diretta del singolo tesserino associato (presente nel dataset) a partire dall'identificativo univoco precedentemente ottenuto o comunicato.
 
 ### 4. Ciclo di vita della credenziale e gestione degli identificativi
 La gestione della persistenza e della validità della credenziale digitale è affidata alla logica di business dell'ente erogatore:
