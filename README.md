@@ -95,6 +95,20 @@ Nella logica di IT-Wallet, per ogni oggetto definito all'interno dell'array `att
     - In **`metadataClaims`** inseriamo lo stato amministrativo di quel tesserino (es. `status: "VALID"`) e la data di ultimo aggiornamento (`last_updated`), utilizzando lo stesso `object_id: "6F9619FF-8B86-D011-B42D-00C04FC964FF"`.
     Questa struttura permette a IT-Wallet di riconciliare correttamente l'attestazione digitale, separando i dati professionali dai metadati di stato e ciclo di vita.
 
+### 3. Logica di interrogazione dell'e-service
+Il comportamento dell'API varia in base ai parametri di ricerca utilizzati nella richiesta:
+- **Ricerca tramite `object_id`**: L'e-service deve restituire il singolo tesserino associato (presente nel dataset) corrispondente all'identificativo univoco fornito.
+- **Ricerca tramite `unique_id` (Codice Fiscale o ID ANPR)**: In questo scenario, l'ente ha la facoltà di implementare una delle seguenti strategie di risposta:
+    - Restituire l'**elenco completo** di tutti i tesserini associati al professionista, inclusi quelli storici o non più validi (il cui stato sarà esplicitato nei relativi `metadataClaims`).
+    - Restituire **esclusivamente i tesserini attivi** alla data della richiesta.
+
+### 4. Ciclo di vita della credenziale e gestione degli identificativi
+La gestione della persistenza e della validità della credenziale digitale è affidata alla logica di business dell'ente erogatore:
+- **Aggiornamento di dati esistenti**: Per correzioni di errori materiali o aggiornamenti tecnici che non modificano la natura della credenziale, l'ente può aggiornare i claim mantenendo invariato l'**`object_id`**.
+- **Variazioni sostanziali e riemissione**: Qualora si verifichi una variazione rilevante dei dati (ad esempio il cambio dell'Ordine territoriale di appartenenza o modifiche che comporterebbero la riemissione fisica del tesserino), la procedura corretta prevede di:
+    1. **Invalidare** la credenziale precedente (impostando lo `status: "INVALID"` nei relativi `metadataClaims`).
+    2. **Generare una nuova credenziale** dotata di un nuovo e differente **`object_id`** (UUID).
+
 ---
 
 ## ✅ Validazione delle specifiche
