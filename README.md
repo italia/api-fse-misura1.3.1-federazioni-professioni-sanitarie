@@ -77,6 +77,26 @@ In sintesi, per tutte le API, l'assenza di un professionista nei registri viene 
 
 ---
 
+## 📢 Implementazione IT-Wallet: Chiarimenti Fondamentali
+
+> [!IMPORTANT]
+> Questa sezione contiene informazioni cruciali per la corretta implementazione degli e-service relativi a IT-Wallet. La conformità a questi requisiti è mandatoria.
+
+### 1. Definizione del `datasetId`
+Il `datasetId` non è un valore fisso globale, ma deve essere deciso arbitrariamente dalla singola Federazione in base al contesto. Esempi di valori suggeriti:
+- L'acronimo della federazione (es: `fofi`).
+- La professione specifica di cui si richiede il tesserino o l'attestazione (es: `tecnico-radiologo`).
+
+### 2. Correlazione tra `attributeClaims` e `metadataClaims`
+Nella logica di IT-Wallet, per ogni oggetto definito all'interno dell'array `attributeClaims` deve essere presente un corrispondente oggetto nell'array `metadataClaims`.
+- **Identificativo comune**: Il collegamento tra i due è garantito dall'uso del campo **`object_id`**, che deve essere un **UUID** identico per entrambi i claim riferiti allo stesso oggetto.
+- **Esempio pratico**: 
+    - In **`attributeClaims`** inseriamo i dati del tesserino (es. `registration_number: "0001234"`, `issuing_organization_name: "OMCeO di Roma"`, loghi in base64) associati a un `object_id: "6F9619FF-8B86-D011-B42D-00C04FC964FF"`.
+    - In **`metadataClaims`** inseriamo lo stato amministrativo di quel tesserino (es. `status: "VALID"`) e la data di ultimo aggiornamento (`last_updated`), utilizzando lo stesso `object_id: "6F9619FF-8B86-D011-B42D-00C04FC964FF"`.
+    Questa struttura permette a IT-Wallet di riconciliare correttamente l'attestazione digitale, separando i dati professionali dai metadati di stato e ciclo di vita.
+
+---
+
 ## ✅ Validazione delle specifiche
 
 Le specifiche OpenAPI pubblicate in questo repository sono **validate e conformi** alle linee guida italiane per le API REST.
