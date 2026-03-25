@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: IT Wallet API - Health Professions Authentic Source
-  version: 0.2.0
+  version: 0.3.0
   description: |
     # IT Wallet Authentic Source e-Service exposed via PDND.
     Generic API for Health Professions for IT-Wallet.
@@ -229,6 +229,7 @@ components:
       required: [unique_id]
       properties:
         unique_id: { type: string, description: "Professional's ANPR ID or Tax ID" }
+        object_id: { type: string, description: "Unique identifier of the Credential dataset. If this parameter is present only the indicated dataset is returned" }
 
     CredentialClaimsResponse:
       type: object
@@ -321,7 +322,7 @@ components:
                 type: string
                 format: date-time
                 example: "2025-01-15T10:30:00Z"
-
+      required: [userClaims, attributeClaims, metadataClaims]
     ProblemDetails:
       type: object
       description: Object conforming to RFC7807 for error reporting.
