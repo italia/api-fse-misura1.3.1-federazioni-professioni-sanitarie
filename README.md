@@ -82,6 +82,13 @@ In sintesi, per tutte le API, l'assenza di un professionista nei registri viene 
 > [!IMPORTANT]
 > Questa sezione contiene informazioni cruciali per la corretta implementazione degli e-service relativi a IT-Wallet. La conformità a questi requisiti è mandatoria.
 
+### 0. Nomenclatura e-service su PDND
+Per l'e-service dedicato all'erogazione dei dati per IT-Wallet, si DEVE utilizzare il seguente nome: 
+> "Creazione EAA Tesserino Federazioni Sanitarie - IT Wallet".
+
+Come descrizione, si DEVE utilizzare la seguente:
+> "Dato un codice fiscale o ID ANPR del cittadino, restituisce i dati per l'emettere l'EAA (Elettronic Attestation of Attributes) del tesserino professionale delle federazioni sanitarie su IT-Wallet."
+
 ### 1. Definizione del `datasetId`
 Il `datasetId` non è un valore fisso globale, ma deve essere deciso arbitrariamente dalla singola Federazione in base al contesto. Esempi di valori suggeriti:
 - L'acronimo della federazione (es: `fofi`).
