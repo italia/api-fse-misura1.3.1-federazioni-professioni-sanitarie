@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   version: "1.0.4"
-  title: Federazione Ordine Professioni Sanitarie - Accertamento status iscrizione professionista
+  title: Federazione Ordine Professioni Sanitarie - Accertamento status professionista
   description: |
     API per l'accertamento dello stato dell'iscrizione di un professionista sanitario
     all'Albo della Federazione Nazionale.
