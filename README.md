@@ -107,6 +107,12 @@ La gestione della persistenza e della validità della credenziale digitale è af
     1. **Invalidare** la credenziale precedente (impostando lo `status: "INVALID"` nei relativi `metadataClaims`).
     2. **Generare una nuova credenziale** dotata di un nuovo e differente **`object_id`** (UUID).
 
+### 5. Pattern di Sicurezza
+
+Per la corretta implementazione degli endpoint dell'e-service IT-Wallet con pattern di sicurezza ModI (anche con GovWay), consultare il documento dedicato:
+
+**→ [IT-Wallet Endpoint Security - Specifiche Tecniche](./docs/IT-Wallet-Endpoint-Security.md)**
+
 ---
 
 ## ✅ Validazione delle specifiche
