@@ -288,33 +288,27 @@ components:
   schemas:
     Problem:
       type: object
-      title: Dettaglio esito chiamata
+      description: Oggetto conforme a RFC 9457 per la segnalazione degli errori.
       properties:
         type:
           type: string
-          description: Tipologia di errore o messaggio.
+          format: uri
+          description: URI assoluto che identifica il tipo di problema.
         title:
           type: string
-          description: Titolo sintetico dell'errore.
+          description: Breve riepilogo del tipo di problema.
         status:
           type: integer
           format: int32
-          minimum: 100
-          maximum: 599
-          description: Codice di stato HTTP associato.
+          description: Codice di stato HTTP generato per questa occorrenza del problema.
         detail:
           type: string
-          description: Descrizione dettagliata dell'errore.
-        result:
-          type: object
-          description: Eventuale payload specifico dell'errore.
-        request_id:
+          description: Spiegazione dettagliata specifica di questa occorrenza del problema.
+        instance:
           type: string
-          description: Identificativo univoco della richiesta.
-      required:
-        - title
-        - status
-        - detail
+          format: uri
+          description: URI assoluto che identifica l'occorrenza specifica del problema.
+      required: [title, status, detail]
 
     Person:
       type: object

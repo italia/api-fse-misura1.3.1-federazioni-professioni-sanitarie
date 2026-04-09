@@ -45,7 +45,7 @@ paths:
             X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
           content:
             application/problem+json:
-              schema: { $ref: "#/components/schemas/ProblemDetails" }
+              schema: { $ref: "#/components/schemas/Problem" }
         "401":
           description: Unauthorized
           headers:
@@ -55,21 +55,21 @@ paths:
             WWW-Authenticate: { $ref: "#/components/headers/WWWAuthenticateHeader" }
           content:
             application/problem+json:
-              schema: { $ref: "#/components/schemas/ProblemDetails" }
+              schema: { $ref: "#/components/schemas/Problem" }
         "429":
           description: Too Many Requests
           headers:
             Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
           content:
             application/problem+json:
-              schema: { $ref: "#/components/schemas/ProblemDetails" }
+              schema: { $ref: "#/components/schemas/Problem" }
         "503":
           description: Service Unavailable
           headers:
             Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
           content:
             application/problem+json:
-              schema: { $ref: "#/components/schemas/ProblemDetails" }
+              schema: { $ref: "#/components/schemas/Problem" }
 
   /attribute-claims/{datasetId}:
     post:
@@ -117,7 +117,7 @@ paths:
             X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
           content:
             application/problem+json:
-              schema: { $ref: "#/components/schemas/ProblemDetails" }
+              schema: { $ref: "#/components/schemas/Problem" }
         "401":
           description: Unauthorized
           headers:
@@ -127,7 +127,7 @@ paths:
             WWW-Authenticate: { $ref: "#/components/headers/WWWAuthenticateHeader" }
           content:
             application/problem+json:
-              schema: { $ref: "#/components/schemas/ProblemDetails" }
+              schema: { $ref: "#/components/schemas/Problem" }
         "404":
           description: Claims not found
           headers:
@@ -136,28 +136,28 @@ paths:
             X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitResetHeader" }
           content:
             application/problem+json:
-              schema: { $ref: "#/components/schemas/ProblemDetails" }
+              schema: { $ref: "#/components/schemas/Problem" }
         "429":
           description: Too Many Requests
           headers:
             Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
           content:
             application/problem+json:
-              schema: { $ref: "#/components/schemas/ProblemDetails" }
+              schema: { $ref: "#/components/schemas/Problem" }
         "500":
           description: Internal Server Error
           headers:
             Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
           content:
             application/problem+json:
-              schema: { $ref: "#/components/schemas/ProblemDetails" }
+              schema: { $ref: "#/components/schemas/Problem" }
         "503":
           description: Service Unavailable
           headers:
             Retry-After: { $ref: "#/components/headers/RetryAfterHeader" }
           content:
             application/problem+json:
-              schema: { $ref: "#/components/schemas/ProblemDetails" }
+              schema: { $ref: "#/components/schemas/Problem" }
 
 components:
   securitySchemes:
@@ -323,9 +323,9 @@ components:
                 format: date-time
                 example: "2025-01-15T10:30:00Z"
       required: [userClaims, attributeClaims, metadataClaims]
-    ProblemDetails:
+    Problem:
       type: object
-      description: Object conforming to RFC7807 for error reporting.
+      description: Object conforming to RFC 9457 for error reporting.
       properties:
         type:
           type: string
