@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: IT Wallet API - Health Professions Authentic Source
+  title: Creazione EAA Tesserino Federazioni Sanitarie - IT Wallet
   version: 0.3.0
   description: |
     # IT Wallet Authentic Source e-Service exposed via PDND.
